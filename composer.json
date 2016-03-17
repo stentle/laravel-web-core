@@ -3,7 +3,7 @@
     "description": "package per comunicare con le api di stentle",
     "type": "laravel-library",
     "require": {
-        "laravel/laravel": "^5.2"
+        "laravel/laravel": "5.2.*"
     },
     "keywords": ["stentle"],
     "license": "MIT",
