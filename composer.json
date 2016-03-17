@@ -10,5 +10,13 @@
             "name": "Stentle SRL",
             "email": "info@stentle.com"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "Stentle\\Webcore\\": "src/"
+        },
+        "files": [
+            "src/Http/helpers.php"
+        ]
+    }
 }
