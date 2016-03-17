@@ -1,0 +1,15 @@
+{
+    "name": "stentle/webcore",
+    "description": "package per comunicare con le api di stentle",
+    "type": "laravel-library",
+    "require": {
+        "laravel/laravel": "^5.2"
+    },
+    "authors": [
+        {
+            "name": "Stentle SRL",
+            "email": "info@stentle.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
