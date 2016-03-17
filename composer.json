@@ -2,9 +2,6 @@
     "name": "stentle/webcore",
     "description": "package per comunicare con le api di stentle",
     "type": "laravel-library",
-    "require": {
-        "laravel/laravel": "5.2.*"
-    },
     "keywords": ["stentle"],
     "license": "MIT",
     "homepage": "http://stentle.com",
