@@ -5,6 +5,9 @@
     "require": {
         "laravel/laravel": "^5.2"
     },
+    "keywords": ["stentle"],
+    "license": "MIT",
+    "homepage": "http://stentle.com",
     "authors": [
         {
             "name": "Stentle SRL",
