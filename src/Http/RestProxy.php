@@ -1,10 +1,10 @@
 <?php
-namespace Stentle\Webcore\Http;
+namespace Stentle\LaravelWebcore\Http;
 
-use Stentle\Webcore\Facades\ClientHttp;
+use Stentle\LaravelWebcore\Facades\ClientHttp;
 use GuzzleHttp\Psr7\Response;
 
-class RestProxy extends \Stentle\Webcore\Abstracts\Proxy
+class RestProxy extends \Stentle\LaravelWebcore\Abstracts\Proxy
 {
     public function __construct($baseUrl, $resource, $rootProperty, $headers = null)
     {

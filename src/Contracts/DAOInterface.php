@@ -1,5 +1,5 @@
 <?php
-namespace Stentle\Webcore\Contracts;
+namespace Stentle\LaravelWebcore\Contracts;
 
 interface DAOInterface
 {

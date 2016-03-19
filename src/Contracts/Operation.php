@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Stentle\Webcore\Contracts;
+namespace Stentle\LaravelWebcore\Contracts;
 
 /**
  * Rappresenta le azioni che possono essere effettuata su una risorsa
- * @package Stentle\Webcore\Contracts
+ * @package Stentle\LaravelWebcore\Contracts
  */
 interface Operation
 {

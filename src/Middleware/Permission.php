@@ -1,8 +1,8 @@
 <?php
 
-namespace Stentle\Webcore\Middleware;
+namespace Stentle\LaravelWebcore\Middleware;
 
-use Stentle\Webcore\Contracts\Authentication;
+use Stentle\LaravelWebcore\Contracts\Authentication;
 use Closure;
 
 /**

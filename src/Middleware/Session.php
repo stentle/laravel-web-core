@@ -1,8 +1,8 @@
 <?php
 
 
-namespace Stentle\Webcore\Middleware;
-use Stentle\Webcore\Business\Authentication;
+namespace Stentle\LaravelWebcore\Middleware;
+use Stentle\LaravelWebcore\Business\Authentication;
 use Closure;
 
 class Session

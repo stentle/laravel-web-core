@@ -1,6 +1,6 @@
 {
-    "name": "stentle/webcore",
-    "description": "package per comunicare con le api di stentle",
+    "name": "stentle/laravel-webcore",
+    "description": "It provides a class sets to facilitate communication with the api of stentle. Support for laravel 5.2.*",
     "type": "laravel-library",
     "keywords": ["stentle"],
     "license": "MIT",
@@ -13,7 +13,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Stentle\\Webcore\\": "src/"
+            "Stentle\\LaravelWebcore\\": "src/"
         },
         "files": [
             "src/Http/helpers.php"

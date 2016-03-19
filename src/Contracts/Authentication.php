@@ -1,10 +1,10 @@
 <?php
-namespace Stentle\Webcore\Contracts;
-use Stentle\Webcore\Models\User;
+namespace Stentle\LaravelWebcore\Contracts;
+use Stentle\LaravelWebcore\Models\User;
 
 /**
  * Interface Authentication
- * @package Stentle\Webcore\Contracts
+ * @package Stentle\LaravelWebcore\Contracts
  */
 interface Authentication {
     /**

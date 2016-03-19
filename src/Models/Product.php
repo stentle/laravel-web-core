@@ -6,13 +6,13 @@
  * Time: 10:56
  */
 
-namespace Stentle\Webcore\Models;
+namespace Stentle\LaravelWebcore\Models;
+use Stentle\LaravelWebcore\Http\RestModel;
 
-use Stentle\Webcore\Http\RestModel;
 
 /**
  * Class Product
- * @package Stentle\Webcore\Models
+ * @package Stentle\LaravelWebcore
  */
 class Product extends RestModel
 {
@@ -41,5 +41,10 @@ class Product extends RestModel
     public $purchasable;
     public $addedToCart;
     public $requestedQuantity;
-    public $attributeGroups;
+    public $photoAttributes;
+    public $declareVariants;
+
+    public function variants($mockup=null){
+        return $this->hasMany('ProductVariants',$mockup);
+    }
 }

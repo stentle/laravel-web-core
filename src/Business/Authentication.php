@@ -6,11 +6,11 @@
  * Time: 11:22
  */
 
-namespace Stentle\Webcore\Business;
+namespace Stentle\LaravelWebcore\Business;
 
-use \Stentle\Webcore\Contracts\Authentication as AuthenticationContract;
-use Stentle\Webcore\Facades\ClientHttp;
-use Stentle\Webcore\Models\User;
+use \Stentle\LaravelWebcore\Contracts\Authentication as AuthenticationContract;
+use Stentle\LaravelWebcore\Facades\ClientHttp;
+use Stentle\LaravelWebcore\Models\User;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;

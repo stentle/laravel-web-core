@@ -6,7 +6,7 @@
  * Time: 10:57
  */
 
-namespace Stentle\Webcore\Contracts;
+namespace Stentle\LaravelWebcore\Contracts;
 
 
 interface User

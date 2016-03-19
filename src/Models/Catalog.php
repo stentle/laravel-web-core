@@ -6,13 +6,13 @@
  * Time: 10:56
  */
 
-namespace Stentle\Webcore\Models;
+namespace Stentle\LaravelWebcore\Models;
 
-use Stentle\Webcore\Http\RestModel;
+use Stentle\LaravelWebcore\Http\RestModel;
 
 /**
  * Class Product
- * @package Stentle\Webcore\Models
+ * @package Stentle\LaravelWebcore\Models
  */
 class Catalog extends RestModel
 {

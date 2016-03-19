@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Stentle\Webcore\Abstracts;
+namespace Stentle\LaravelWebcore\Abstracts;
 
 
 class Entity

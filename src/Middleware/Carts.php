@@ -1,8 +1,8 @@
 <?php
 
-namespace Stentle\Webcore\Middleware;
+namespace Stentle\LaravelWebcore\Middleware;
 
-use Stentle\Webcore\Models\Cart;
+use Stentle\LaravelWebcore\Models\Cart;
 use Closure;
 use Illuminate\Support\Facades\Session;
 

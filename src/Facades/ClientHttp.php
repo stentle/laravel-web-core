@@ -1,6 +1,6 @@
 <?php
 
-namespace Stentle\Webcore\Facades;
+namespace Stentle\LaravelWebcore\Facades;
 use Illuminate\Support\Facades\Facade;
 
 class ClientHttp extends Facade

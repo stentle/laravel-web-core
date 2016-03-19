@@ -6,9 +6,9 @@
  * Time: 10:56
  */
 
-namespace Stentle\Webcore\Models;
+namespace Stentle\LaravelWebcore\Models;
 
-use Stentle\Webcore\Http\RestModel;
+use Stentle\LaravelWebcore\Http\RestModel;
 
 class Cart extends RestModel
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Stentle\Webcore\Providers;
+namespace Stentle\LaravelWebcore\Providers;
 
 
-use Stentle\Webcore\Business\Authentication;
-use Stentle\Webcore\Models\User;
+use Stentle\LaravelWebcore\Business\Authentication;
+use Stentle\LaravelWebcore\Models\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
@@ -77,7 +77,7 @@ class StentleWebCoreProvider extends ServiceProvider
     {
         $user = new User();
         $auth = new Authentication($user,$this->app['session.store']);
-        $this->app->instance('Stentle\Webcore\Contracts\Authentication', $auth);
+        $this->app->instance('Stentle\LaravelWebcore\Contracts\Authentication', $auth);
 
         Blade::directive('showError', function($field) {
             $field=substr($field, 1, -1);

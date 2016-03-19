@@ -1,6 +1,6 @@
 <?php
 
-namespace Stentle\Webcore\Business;
+namespace Stentle\LaravelWebcore\Business;
 use DrewM\MailChimp\MailChimp;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;

@@ -6,10 +6,10 @@
  * Time: 18:27
  */
 
-namespace Stentle\Webcore\Abstracts;
+namespace Stentle\LaravelWebcore\Abstracts;
 
 
-use Stentle\Webcore\Contracts\Operation;
+use Stentle\LaravelWebcore\Contracts\Operation;
 
 abstract class Proxy implements  Operation
 {

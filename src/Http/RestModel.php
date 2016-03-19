@@ -6,11 +6,11 @@
  * Time: 19:04
  */
 
-namespace Stentle\Webcore\Http;
+namespace Stentle\LaravelWebcore\Http;
 
 
-use Stentle\Webcore\Abstracts\Entity;
-use Stentle\Webcore\Contracts\DAOInterface;
+use Stentle\LaravelWebcore\Abstracts\Entity;
+use Stentle\LaravelWebcore\Contracts\DAOInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Config;
@@ -183,7 +183,7 @@ class RestModel extends Entity implements DAOInterface
      */
     public function hasMany($namespace, $path_resource=null)
     {
-        $class = "\Stentle\Webcore\Models\\$namespace";
+        $class = "\Stentle\LaravelWebcore\Models\\$namespace";
 
         $model = new $class;
 
