@@ -8,6 +8,7 @@
 
 namespace Stentle\LaravelWebcore\Business;
 
+use Illuminate\Http\Request;
 use \Stentle\LaravelWebcore\Contracts\Authentication as AuthenticationContract;
 use Stentle\LaravelWebcore\Facades\ClientHttp;
 use Stentle\LaravelWebcore\Models\User;
@@ -24,13 +25,14 @@ class Authentication implements AuthenticationContract
 
     private $user;
     private $session;
+
     /**
      * @param User $user
      */
-    public function __construct(User $user,SessionStore $session)
+    public function __construct(User $user, SessionStore $session)
     {
 
-        $this->session=$session;
+        $this->session = $session;
         $this->user = $user;
     }
 
@@ -42,8 +44,8 @@ class Authentication implements AuthenticationContract
     public function create(array $data)
     {
         $this->user->setInfo($data);
-        $result=$this->user->save();
-        if ($result===true)
+        $result = $this->user->save();
+        if ($result === true)
             return $this->user;
         else
             return $result;
@@ -60,14 +62,15 @@ class Authentication implements AuthenticationContract
 
 
     /**
-     * @param $request
-     * @return User|bool
+     * @param string $username
+     * @param string $password
+     * @return bool|User
      */
-    public function login($username,$password)
+    public function login($username, $password)
     {
 
         try {
-            $response = ClientHttp::post('login?username='.$username.'&password='.$password.'&remember-me=true');
+            $response = ClientHttp::post('login?username=' . $username . '&password=' . $password . '&remember-me=true');
 
         } catch (BadResponseException $e) {
 
@@ -77,14 +80,14 @@ class Authentication implements AuthenticationContract
             return false;
         }
 
-        $user= $this->createAccess($response);
-        if($user!==false){
-            setcookie('email',$username,time()+env('SESSION_DURATION')*60,'/');
-            setcookie('password',$password,time()+env('SESSION_DURATION')*60,'/');
-            $_COOKIE['email']=$username;
-            $_COOKIE['password']=$password;
+        $user = $this->createAccess($response);
+        if ($user !== false) {
+            setcookie('email', $username, time() + env('SESSION_DURATION') * 60, '/');
+            setcookie('password', $password, time() + env('SESSION_DURATION') * 60, '/');
+            $_COOKIE['email'] = $username;
+            $_COOKIE['password'] = $password;
             return $user;
-        }else{
+        } else {
             return false;
         }
 
@@ -126,9 +129,9 @@ class Authentication implements AuthenticationContract
     }
 
     /**
-     * @param $request
-     * @param $provider
-     * @return mixed
+     * @param $request Request
+     * @param $provider string
+     * @return User| bool | Response
      */
     public function loginThirdParty($request, $provider)
     {
@@ -144,6 +147,9 @@ class Authentication implements AuthenticationContract
                 }
                 $data['token'] = $user->token;
                 $data['authorityName'] = 'facebook';
+                if($request->input('email')!==null){
+                    $data['email']=$request->input('email');
+                }
                 break;
         }
 
@@ -152,14 +158,19 @@ class Authentication implements AuthenticationContract
                 'json' => $data
             ]);
 
+
         } catch (BadResponseException $e) {
-            //TODO: gestire eccezione
             return false;
         }
 
-        return $this->createAccess($response);
+        if ($response instanceof Response) {
+            if ($response->getStatusCode() == 400) {
+                return $response;
+            } else {
+                return $this->createAccess($response);
+            }
+        }
     }
-
 
     /**
      * @param $provider
