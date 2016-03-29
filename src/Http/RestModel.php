@@ -175,16 +175,21 @@ class RestModel extends Entity implements DAOInterface
         // TODO: Implement findBy() method.
     }
 
-    /**
-     * Permette di specificare un'associazione con altre entità
-     * @param $path_entity namespace dell'entity da istanziare
-     * @param $path_resource path da utilizzare per effettuare l'associazione
-     * @return array restituisce un array di istanze di $namespace
-     */
-    public function hasMany($namespace, $path_resource=null)
-    {
-        $class = "\Stentle\LaravelWebcore\Models\\$namespace";
 
+    /**
+     * @param $className nome della classe da istanziare per l'associazione
+     * @param null $namespace namespace della classe (facoltativo)
+     * @param null $path_resource possibilità di modificare il resource
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function hasMany($className,$namespace=null, $path_resource=null)
+    {
+        if($namespace!=null){
+            $class="$namespace\\$className";
+        }else {
+            $class = "\Stentle\LaravelWebcore\Models\\$className";
+        }
         $model = new $class;
 
         if($model instanceof RestModel){
