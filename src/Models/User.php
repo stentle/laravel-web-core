@@ -57,6 +57,44 @@ class User extends RestModel
         return $this->hasMany('Order');
     }
 
+
+
+    public function AddShippingAddress(ShippingAddress $model){
+        $model->resource = $this->resource.'/'.$this->id.'/'.$model->resource;
+        $model->save();
+    }
+    public function shippingAddresses(){
+        return $this->hasMany('ShippingAddress');
+    }
+
+    /***
+     * @param $id
+     * @return ShippingAddress
+     * @throws \Exception
+     */
+    public function findShippingAddress($id){
+        return $this->findSubresource('ShippingAddress',$id);
+    }
+    /***
+     * @param $id
+     * @return BillingAddress
+     * @throws \Exception
+     */
+    public function findBillingAddress($id){
+        return $this->findSubresource('BillingAddress',$id);
+    }
+
+    public function deleteShippingAddress($id){
+        return $this->deleteSubresource('ShippingAddress',$id);
+    }
+
+    public function deleteBillingAddress($id){
+        return $this->deleteSubresource('BillingAddress',$id);
+    }
+    public function billingAddresses(){
+        return $this->hasMany('BillingAddress');
+    }
+
     /**
      * la variabilità country è in realtà una sotto risorsa. Pertanto va trattata
      * @param $name

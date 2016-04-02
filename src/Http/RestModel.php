@@ -100,11 +100,11 @@ class RestModel extends Entity implements DAOInterface
      */
     public function save($force=false)
     {
-        $idProp= $this->idProperty;
+        $idProp = $this->idProperty;
         try {
-            $this->proxy->resource=$this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+            $this->proxy->resource = $this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
 
-            if (empty($this->$idProp)||$force) {
+            if (empty($this->$idProp) || $force) {
                 $r = $this->proxy->create($this->getInfo());
             } else {
                 $r = $this->proxy->update($this->getInfo(array('id')), $this->$idProp);
@@ -113,14 +113,14 @@ class RestModel extends Entity implements DAOInterface
             if ($statusCode == 200 || $statusCode == 201) {
                 $json = $r->getBody()->getContents();
                 $json = json_decode($json, true);
-                $this->setInfo($json[$this->rootProperty], $isGuard = false);
+                $this->setInfo($json[$this->rootPropertyForMethodFind], $isGuard = false);
                 return true;
-            }else{
+            } else {
                 $json = $r->getBody()->getContents();
                 return $json;
             }
         } catch (ClientException $e) {
-            throw new ClientException($r->getBody()->getContents());
+            return false;
         }
     }
 
@@ -131,7 +131,24 @@ class RestModel extends Entity implements DAOInterface
 
     public function delete()
     {
-        // TODO: Implement delete() method.
+        $idProp = $this->idProperty;
+        try {
+            $this->proxy->resource = $this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+
+            $r= $this->proxy->destroy($this->$idProp);
+
+            $statusCode = $r->getStatusCode();
+            if ($statusCode == 200 || $statusCode == 201) {
+                $json = $r->getBody()->getContents();
+                $json = json_decode($json, true);
+                return true;
+            } else {
+                $json = $r->getBody()->getContents();
+                return $json;
+            }
+        } catch (ClientException $e) {
+            return false;
+        }
     }
 
     /**
@@ -141,30 +158,27 @@ class RestModel extends Entity implements DAOInterface
     public function find($id)
     {
         $instance = new static;
-        $proxy=$instance->proxy;
-        if($instance->rootPropertyForMethodFind!=NULL)
-            $root=$instance->rootPropertyForMethodFind;
+        $instance->proxy->resource = $this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+        $proxy = $instance->proxy;
+        if ($instance->rootPropertyForMethodFind != NULL)
+            $root = $instance->rootPropertyForMethodFind;
         else
-            $root=$instance->rootProperty;
-        if($proxy instanceof RestProxy) {
+            $root = $instance->rootProperty;
+        if ($proxy instanceof RestProxy) {
             try {
-                if($this->mockup==null) {
+                if ($this->mockup == null) {
                     $response = $proxy->read($id);
                     $json = json_decode($response->getBody()->getContents(), true);
-                }else{
-                    $json=json_decode($this->mockup,true);
+                } else {
+                    $json = json_decode($this->mockup, true);
                 }
+                $data = $instance->getValueFromJsonArray($root, $json);
 
-                $data = $instance->getValueFromJsonArray($root,$json);
-                if($data==null)
+                if ($data == null)
                     return false;
-                $instance->setInfo($data,$idGuard=false);
+                $instance->setInfo($data, $idGuard = false);
                 return $instance;
-            }catch(BadResponseException $e) {
-                //TODO: gestire eccezioni 500/404/401;
-                var_dump($e->getRequest());
-                var_dump($e->getResponse());
-                throw new \Exception();
+            } catch (BadResponseException $e) {
                 return false;
             }
         }
@@ -214,6 +228,57 @@ class RestModel extends Entity implements DAOInterface
     public function hasOne($namespace, $path_resource)
     {
         // TODO: Implement hasOne() method.
+    }
+
+    protected function findSubresource($namespace,$id){
+
+        $class = "\Stentle\LaravelWebcore\Models\\$namespace";
+        $model = new $class;
+        if ($model instanceof RestModel) {
+            if (empty($this->id))
+                throw new \Exception("ID empty");
+
+            $model->resource = $this->resource . '/' . $this->id . '/' . $model->resource;
+
+            return $model->find($id);
+        }else{
+            throw new \Exception("$namespace model not exist");
+        }
+
+    }
+
+    protected function deleteSubresource($namespace,$id){
+
+        $class = "\Stentle\LaravelWebcore\Models\\$namespace";
+        $model = new $class;
+        if ($model instanceof RestModel) {
+            if (empty($this->id))
+                throw new \Exception("ID empty");
+
+            $model->resource = $this->resource . '/' . $this->id . '/' . $model->resource;
+            $model->id=$id;
+            return $model->delete();
+        }else{
+            throw new \Exception("$namespace model not exist");
+        }
+
+    }
+
+
+
+    /**
+     * crea l'associazione per una sottorisorsa
+     * @param RestModel $model
+     * @param bool $forceSaveWithPost se true ,anche se l'id è specificato forzo il save a diventare una POST (invece di una PUT)
+     * @return mixed
+     */
+    public function add(RestModel $model, $forceSaveWithPost = false)
+    {
+        if (empty($this->id))
+            throw new \Exception("ID empty");
+
+        $model->resource = $this->resource . '/' . $this->id . '/' . $model->resource;
+        return $model->save($forceSaveWithPost);
     }
 
     /**

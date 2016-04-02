@@ -1,6 +1,8 @@
 <?php
 namespace Stentle\LaravelWebcore\Contracts;
 
+use Stentle\LaravelWebcore\Http\RestModel;
+
 interface DAOInterface
 {
     public function all();
@@ -28,4 +30,12 @@ interface DAOInterface
      * @return mixed restituisce un'istanza di $namespace
      */
     public function hasOne($namespace, $path_resource);
+
+    /**
+     * crea l'associazione per una sottorisorsa
+     * @param RestModel $model
+     * @param bool $forceSaveWithPost se true ,anche se l'id è specificato forzo il save a diventare una POST (invece di una PUT)
+     * @return mixed
+     */
+    public function add(RestModel $model,$forceSaveWithPost=false);
 } 
