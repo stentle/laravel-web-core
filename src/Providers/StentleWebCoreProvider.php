@@ -35,6 +35,13 @@ class StentleWebCoreProvider extends ServiceProvider
             $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
                 if ($response->hasHeader('Set-Cookie')) {
                     Session::put('cookie', $response->getHeader('Set-Cookie')[0]);
+
+                    //retrieve the token from header set-cookie and store in cookie
+                    $tmp=explode(';',$response->getHeader('Set-Cookie')[0]);
+                    $tmp=explode('=',$tmp[0]);
+                    setcookie("token",$tmp[1], time() + env('SESSION_DURATION') * 60, '/');
+                    $_COOKIE['token']=$tmp[1];
+
                 }
                 if ($this->last_request instanceof RequestInterface) {
                     $this->last_request->getBody()->seek(0);
