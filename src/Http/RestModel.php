@@ -67,6 +67,7 @@ class RestModel extends Entity implements DAOInterface
         else
             return $this->resource;
     }
+
     public function all()
     {
         $instance = new static;
@@ -117,7 +118,7 @@ class RestModel extends Entity implements DAOInterface
     {
         $idProp = $this->idProperty;
         try {
-            $this->proxy->resource =$this->getUrl();  //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+            $this->proxy->resource = $this->getUrl();  //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
 
             if (empty($this->$idProp) || $force) {
                 $r = $this->proxy->create($this->getInfo());
@@ -173,8 +174,8 @@ class RestModel extends Entity implements DAOInterface
     public function find($id)
     {
         $instance = new static;
-        $instance->baseUrl=$this->baseUrl;
-        $instance->resource=$this->resource;
+        $instance->baseUrl = $this->baseUrl;
+        $instance->resource = $this->resource;
 
         $instance->proxy->resource = $this->getUrl();  //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
         $proxy = $instance->proxy;
@@ -185,7 +186,10 @@ class RestModel extends Entity implements DAOInterface
         if ($proxy instanceof RestProxy) {
             try {
                 if ($this->mockup == null) {
-                    $response = $proxy->read($id);
+                    if ($this->id == null)
+                        $response = $proxy->read($id);
+                    else
+                        $response = $proxy->read(); //significa che l'id è già all'interno dell'url della risorsa.
                     $json = json_decode($response->getBody()->getContents(), true);
                 } else {
                     $json = json_decode($this->mockup, true);
@@ -201,6 +205,7 @@ class RestModel extends Entity implements DAOInterface
             }
         }
     }
+
 
     public function findBy(array $data)
     {
