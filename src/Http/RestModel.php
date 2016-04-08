@@ -53,17 +53,25 @@ class RestModel extends Entity implements DAOInterface
     public function __construct($mockup = null)
     {
         $this->addFieldsIgnore(array('baseUrl', 'resource', 'idProperty', 'rootProperty', 'proxy', 'headers'));
-        $this->proxy = new RestProxy(Config::get('stentle.api'), $this->resource, 'data', $this->headers);
+        $this->proxy = new RestProxy(Config::get('stentle.api'), $this->getUrl(), 'data', $this->headers);
         $this->mockup = $mockup;
     }
 
+    private function getUrl(){
+        if($this->baseUrl!=null)
+            return $this->baseUrl.'/'.$this->resource;
+        else
+            return $this->resource;
+    }
     public function all()
     {
         $instance = new static;
         $proxy = $instance->proxy;
 
         if ($proxy instanceof RestProxy) {
-            $proxy->resource = $this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+
+
+            $proxy->resource = $this->getUrl(); //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
             try {
                 if ($this->mockup == null) {
                     $response = $proxy->read();
@@ -103,7 +111,7 @@ class RestModel extends Entity implements DAOInterface
     {
         $idProp = $this->idProperty;
         try {
-            $this->proxy->resource = $this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+            $this->proxy->resource =$this->getUrl();  //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
 
             if (empty($this->$idProp) || $force) {
                 $r = $this->proxy->create($this->getInfo());
@@ -134,7 +142,7 @@ class RestModel extends Entity implements DAOInterface
     {
         $idProp = $this->idProperty;
         try {
-            $this->proxy->resource = $this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+            $this->proxy->resource = $this->getUrl();  //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
 
             $r = $this->proxy->destroy($this->$idProp);
 
@@ -159,7 +167,7 @@ class RestModel extends Entity implements DAOInterface
     public function find($id)
     {
         $instance = new static;
-        $instance->proxy->resource = $this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+        $instance->proxy->resource = $this->getUrl();  //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
         $proxy = $instance->proxy;
         if ($instance->rootPropertyForMethodFind != NULL)
             $root = $instance->rootPropertyForMethodFind;
