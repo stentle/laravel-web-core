@@ -213,7 +213,7 @@ class RestModel extends Entity implements DAOInterface
 
             $model->mockup = $this->mockup;
             $model->resource = $this->resource . '/' . $this->id . '/' . $model->resource;
-            return $model->ll();
+            return $model->all();
         } else {
             return array();
         }
@@ -289,15 +289,17 @@ class RestModel extends Entity implements DAOInterface
      * @param $array l'array sul quale navigare
      * @return array l'array che contiene il valore che si voleva raggiungere
      */
-    private function getValueFromJsonArray($jsonkey,$array){
+    private function getValueFromJsonArray($jsonkey, $array)
+    {
+        if ($jsonkey != null) {
+            $keys = explode('.', $jsonkey);
 
-        $keys=explode('.',$jsonkey);
-
-        for($i=0;$i<count($keys);$i++){
-            if(isset($array[$keys[$i]])) {
-                $array = $array[$keys[$i]];
-            }else
-                return null;
+            for ($i = 0; $i < count($keys); $i++) {
+                if (isset($array[$keys[$i]])) {
+                    $array = $array[$keys[$i]];
+                } else
+                    return null;
+            }
         }
         return $array;
     }
