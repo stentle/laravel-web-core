@@ -45,10 +45,14 @@ class StentleWebCoreProvider extends ServiceProvider
                 }
                 if ($this->last_request instanceof RequestInterface) {
                     $this->last_request->getBody()->seek(0);
-                    Log::info($response->getStatusCode(), ['uri' => $this->last_request->getUri()->getHost() . $this->last_request->getUri()->getPath(), 'method_request' => $this->last_request->getMethod(), 'body_request' => $this->last_request->getBody()->getContents(), 'headers_request' => json_encode($this->last_request->getHeaders()), 'body_response' => $response->getBody()]);
+                    $port=$this->last_request->getUri()->getPort();
+                    if($port!=null){
+                        $port=':'.$port;
+                    }else
+                        $port='';
+                    Log::info($response->getStatusCode(), ['uri' => $this->last_request->getUri()->getHost().$port.$this->last_request->getUri()->getPath(), 'method_request' => $this->last_request->getMethod(), 'body_request' => $this->last_request->getBody()->getContents(), 'headers_request' => json_encode($this->last_request->getHeaders()), 'body_response' => $response->getBody()]);
                     $response->getBody()->seek(0);
                 }
-
 
                 return $response;
             }));
