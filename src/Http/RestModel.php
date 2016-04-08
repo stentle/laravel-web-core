@@ -48,7 +48,7 @@ class RestModel extends Entity implements DAOInterface
     /**
      * @var string E' possibile definire un rootproperty diversa per la find.
      */
-    protected $rootPropertyForMethodFind = null;
+    protected $rootPropertyForMethodFind = 'data';
 
     public function __construct($mockup = null)
     {

@@ -22,11 +22,5 @@ class Cart extends RestModel
     public $totals;
     public $country;
     public $message;
-    public function add(Product $product){
-        if(empty($this->id))
-            throw new \Exception("idCart not defined");
-        $product->resource=$this->resource.'/'.$this->id.'/'.$product->resource;
-        return $product->save(true);
-    }
 
 }
