@@ -27,59 +27,60 @@ class RestModel extends Entity implements DAOInterface
     /**
      * @var array headers personalizzati da inviare alla chiamata
      */
-    protected  $headers;
+    protected $headers;
     public $id;
     /**
      * @var string rappresenta l'url su quale verranno fatte tutte le richieste
      */
-    protected  $baseUrl;
+    protected $baseUrl;
     /**
      * @var string rappresenta il nome della risorsa
      */
-    protected  $resource;
+    protected $resource;
     /**
      * @var string The name of the field treated as this Model's unique id.
      */
-    protected  $idProperty='id';
+    protected $idProperty = 'id';
     /**
      * @var string The name of the property which contains the Array of row objects. For JSON reader it's dot-separated list of property names.
      */
-    protected  $rootProperty='data';
+    protected $rootProperty = 'data';
     /**
      * @var string E' possibile definire un rootproperty diversa per la find.
      */
-    protected  $rootPropertyForMethodFind=null;
+    protected $rootPropertyForMethodFind = null;
 
-    public function __construct($mockup=null){
-        $this->addFieldsIgnore(array('baseUrl','resource','idProperty','rootProperty','proxy','headers'));
-        $this->proxy= new RestProxy(Config::get('stentle.api'),$this->resource,'data',$this->headers);
-        $this->mockup=$mockup;
+    public function __construct($mockup = null)
+    {
+        $this->addFieldsIgnore(array('baseUrl', 'resource', 'idProperty', 'rootProperty', 'proxy', 'headers'));
+        $this->proxy = new RestProxy(Config::get('stentle.api'), $this->resource, 'data', $this->headers);
+        $this->mockup = $mockup;
     }
 
     public function all()
     {
         $instance = new static;
-        $proxy=$instance->proxy;
+        $proxy = $instance->proxy;
 
-        if($proxy instanceof RestProxy) {
-            $proxy->resource=$this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+        if ($proxy instanceof RestProxy) {
+            $proxy->resource = $this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
             try {
-                if($this->mockup==null) {
+                if ($this->mockup == null) {
                     $response = $proxy->read();
                     $json = json_decode($response->getBody()->getContents(), true);
-                }else
-                    $json=json_decode($this->mockup,true);
-                $data=$this->getValueFromJsonArray($instance->rootProperty,$json);
-                if($data==null)
-                    return array();
-                $items=array();
-                foreach($data as $item){
+                } else
+                    $json = json_decode($this->mockup, true);
+                $data = $this->getValueFromJsonArray($instance->rootProperty, $json);
+                if ($data == null)
+                    return aarray();
+                $items = array();
+                foreach ($data as $item) {
                     $instance = new static;
-                    $instance->setInfo($item,$isGuard=false);
-                    $items[]=$instance;
+                    $instance->setInfo($item, $isGuard = false);
+                    $items[] = $instance;
                 }
-               return $items;
-            }catch(BadResponseException $e) {
+                return $items;
+            } catch (BadResponseException $e) {
                 //TODO: gestire eccezioni 500/404/401;
                 var_dump($e->getRequest());
                 var_dump($e->getResponse());
@@ -98,7 +99,7 @@ class RestModel extends Entity implements DAOInterface
      * @param bool|true $force se true forza la post nononstante sia definito l'id
      * @return bool
      */
-    public function save($force=false)
+    public function save($force = false)
     {
         $idProp = $this->idProperty;
         try {
@@ -135,7 +136,7 @@ class RestModel extends Entity implements DAOInterface
         try {
             $this->proxy->resource = $this->resource; //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
 
-            $r= $this->proxy->destroy($this->$idProp);
+            $r = $this->proxy->destroy($this->$idProp);
 
             $statusCode = $r->getStatusCode();
             if ($statusCode == 200 || $statusCode == 201) {
@@ -197,23 +198,23 @@ class RestModel extends Entity implements DAOInterface
      * @return array|bool
      * @throws \Exception
      */
-    public function hasMany($className,$namespace=null, $path_resource=null)
+    public function hasMany($className, $namespace = null, $path_resource = null)
     {
-        if($namespace!=null){
-            $class="$namespace\\$className";
-        }else {
+        if ($namespace != null) {
+            $class = "$namespace\\$className";
+        } else {
             $class = "\Stentle\LaravelWebcore\Models\\$className";
         }
         $model = new $class;
 
-        if($model instanceof RestModel){
-            if(empty($this->id))
+        if ($model instanceof RestModel) {
+            if (empty($this->id))
                 throw new \Exception("ID empty");
 
-            $model->mockup=$this->mockup;
-            $model->resource=$this->resource.'/'.$this->id.'/'.$model->resource;
-            return $model->all();
-        }else{
+            $model->mockup = $this->mockup;
+            $model->resource = $this->resource . '/' . $this->id . '/' . $model->resource;
+            return $model->ll();
+        } else {
             return array();
         }
 
@@ -230,7 +231,8 @@ class RestModel extends Entity implements DAOInterface
         // TODO: Implement hasOne() method.
     }
 
-    protected function findSubresource($namespace,$id){
+    protected function findSubresource($namespace, $id)
+    {
 
         $class = "\Stentle\LaravelWebcore\Models\\$namespace";
         $model = new $class;
@@ -241,13 +243,14 @@ class RestModel extends Entity implements DAOInterface
             $model->resource = $this->resource . '/' . $this->id . '/' . $model->resource;
 
             return $model->find($id);
-        }else{
+        } else {
             throw new \Exception("$namespace model not exist");
         }
 
     }
 
-    protected function deleteSubresource($namespace,$id){
+    protected function deleteSubresource($namespace, $id)
+    {
 
         $class = "\Stentle\LaravelWebcore\Models\\$namespace";
         $model = new $class;
@@ -256,14 +259,13 @@ class RestModel extends Entity implements DAOInterface
                 throw new \Exception("ID empty");
 
             $model->resource = $this->resource . '/' . $this->id . '/' . $model->resource;
-            $model->id=$id;
+            $model->id = $id;
             return $model->delete();
-        }else{
+        } else {
             throw new \Exception("$namespace model not exist");
         }
 
     }
-
 
 
     /**
