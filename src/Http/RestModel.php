@@ -72,7 +72,7 @@ class RestModel extends Entity implements DAOInterface
                     $json = json_decode($this->mockup, true);
                 $data = $this->getValueFromJsonArray($instance->rootProperty, $json);
                 if ($data == null)
-                    return aarray();
+                    return array();
                 $items = array();
                 foreach ($data as $item) {
                     $instance = new static;
