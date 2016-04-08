@@ -57,9 +57,13 @@ class RestModel extends Entity implements DAOInterface
         $this->mockup = $mockup;
     }
 
-    private function getUrl(){
-        if($this->baseUrl!=null)
-            return $this->baseUrl.'/'.$this->resource;
+    public function getUrl()
+    {
+        if ($this->baseUrl != null)
+            if ($this->id != null)
+                return $this->baseUrl . '/' . $this->resource . '/' . $this->id;
+            else
+                return $this->baseUrl . '/' . $this->resource;
         else
             return $this->resource;
     }
@@ -85,6 +89,8 @@ class RestModel extends Entity implements DAOInterface
                 foreach ($data as $item) {
                     $instance = new static;
                     $instance->setInfo($item, $isGuard = false);
+                    $instance->baseUrl = $this->baseUrl;
+                    $instance->resource = $this->resource;
                     $items[] = $instance;
                 }
                 return $items;
@@ -167,6 +173,9 @@ class RestModel extends Entity implements DAOInterface
     public function find($id)
     {
         $instance = new static;
+        $instance->baseUrl=$this->baseUrl;
+        $instance->resource=$this->resource;
+
         $instance->proxy->resource = $this->getUrl();  //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
         $proxy = $instance->proxy;
         if ($instance->rootPropertyForMethodFind != NULL)
