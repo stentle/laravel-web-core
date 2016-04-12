@@ -31,7 +31,7 @@ class Session
                 $this->auth->login($_COOKIE['email'],$_COOKIE['password']);
             }
         }else{ //se per qualche motivo la sessione esiste ma non ci sono i cookie memorizzati allora forzo un logout generale
-            if($this->auth->check()){
+            if($this->auth->check() && (!isset($_COOKIE['token']))){
                 \Illuminate\Support\Facades\Session::flush();
             }
         }
