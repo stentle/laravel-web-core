@@ -131,24 +131,29 @@ class Authentication implements AuthenticationContract
     /**
      * @param $request Request
      * @param $provider string
+     * @param $token string
      * @return User| bool | Response
      */
-    public function loginThirdParty($request, $provider)
+    public function loginThirdParty($request, $provider, $token = null)
     {
 
         $data = [];
         switch ($provider) {
             case 'facebook':
-                try {
-                    $user = Socialite::driver('facebook')->user();
-                } Catch (ClientException $e) {
-                    //TODO: gestire eccezione (token scaduto o altro)
-                    return false;
+                if ($token != null) {
+                    $data['token'] = $token;
+                } else {
+                    try {
+                        $user = Socialite::driver('facebook')->user();
+                    } Catch (ClientException $e) {
+                        //TODO: gestire eccezione (token scaduto o altro)
+                        return false;
+                    }
+                    $data['token'] = $user->token;
                 }
-                $data['token'] = $user->token;
                 $data['authorityName'] = 'facebook';
-                if($request->input('email')!==null){
-                    $data['email']=$request->input('email');
+                if ($request->input('email') !== null) {
+                    $data['email'] = $request->input('email');
                 }
                 break;
         }
@@ -171,6 +176,7 @@ class Authentication implements AuthenticationContract
             }
         }
     }
+
 
     /**
      * @param $provider

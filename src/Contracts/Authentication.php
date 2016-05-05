@@ -38,9 +38,10 @@ interface Authentication
     /**si occupa di effettuare il login tramite tramite social
      * @param $request Request
      * @param $provider string
+     * @param $token string facoltativo. Se specificato non utilizza socialiate
      * @return bool|User
      */
-    public function loginThirdParty($request, $provider);
+    public function loginThirdParty($request, $provider,$token=null);
 
     /**
      * @param $provider
