@@ -94,7 +94,7 @@ function isItemMenuActive($value)
  */
 function getGeoByIp($ip)
 {
-    if (isset($_SERVER['GEOIP_CITY_COUNTRY_CODE'])) {
+    if (isset($_SERVER['GEOIP_CITY_COUNTRY_CODE']) && isset($_SERVER['GEOIP_CITY_CONTINENT_CODE'])) {
         $geo['geoplugin_countryCode'] = strtolower($_SERVER['GEOIP_CITY_COUNTRY_CODE']);
         $geo['geoplugin_continentCode'] = strtolower($_SERVER['GEOIP_CITY_CONTINENT_CODE']);
         return $geo;
