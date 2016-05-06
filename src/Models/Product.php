@@ -43,6 +43,7 @@ class Product extends RestModel
     public $requestedQuantity;
     public $photoAttributes;
     public $declareVariants;
+    public $attributeGroups;
 
     public function variants($mockup=null){
         return $this->hasMany('ProductVariants',$mockup);
