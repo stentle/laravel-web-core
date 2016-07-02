@@ -24,6 +24,7 @@ class Order extends RestModel
     public $status;
     public $identifier;
     public $placedDate;
+    public $sub_order_list;
     public $totals;
     public $customerShippingAddress;
     public $customerBillingAddress;
