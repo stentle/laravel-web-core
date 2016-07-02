@@ -28,6 +28,7 @@ class StentleWebCoreProvider extends ServiceProvider
     public function boot(Router $router)
     {
         $this->app->singleton('clienthttp', function () {
+
             //salvo i cookie mettendomi in ascolto sulle risposte alle chiamate delle api di stentle
             //doc: http://guzzle.readthedocs.org/en/latest/handlers-and-middleware.html
             $stack = new HandlerStack();
@@ -43,6 +44,8 @@ class StentleWebCoreProvider extends ServiceProvider
                     $_COOKIE['token']=$tmp[1];
 
                 }
+                $content= $response->getBody()->getContents();
+                $response->getBody()->seek(0);
                 if ($this->last_request instanceof RequestInterface) {
                     $this->last_request->getBody()->seek(0);
                     $port=$this->last_request->getUri()->getPort();
@@ -50,21 +53,21 @@ class StentleWebCoreProvider extends ServiceProvider
                         $port=':'.$port;
                     }else
                         $port='';
-                    Log::info($response->getStatusCode(), ['uri' => $this->last_request->getUri()->getHost().$port.$this->last_request->getUri()->getPath(), 'method_request' => $this->last_request->getMethod(), 'body_request' => $this->last_request->getBody()->getContents(), 'headers_request' => json_encode($this->last_request->getHeaders()), 'body_response' => $response->getBody()->getContents()]);
-                    $response->getBody()->seek(0);
-                }
 
-                return $response;
+                    Log::info($response->getStatusCode(), ['uri' => $this->last_request->getUri()->getHost().$port.$this->last_request->getUri()->getPath(), 'method_request' => $this->last_request->getMethod(), 'body_request' => $this->last_request->getBody()->getContents(), 'headers_request' => json_encode($this->last_request->getHeaders()), 'body_response' => $content]);
+                }
+                return $response->withHeader('Content-Length',strlen($content));
             }));
 
             //setto i cookie su ogni richiesta fatta alle chiamate delle api di stentle
             $stack->push(Middleware::mapRequest(function (RequestInterface $request) {
-                $this->last_request = $request;
-
                 if(Session::has('cookie')) { //aggiunto alla richieste anche il cookie di autentificazione in caso è presente
-                    return $request->withHeader('cookie', Session::get('cookie'));
-                }else
+                    $this->last_request = $request->withHeader('cookie', Session::get('cookie'));
+                    return $this->last_request;
+                }else {
+                    $this->last_request = $request;
                     return $request;
+                }
 
             }));
 
