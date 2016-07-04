@@ -7,6 +7,7 @@
  */
 
 namespace Stentle\LaravelWebcore\Models;
+
 use Stentle\LaravelWebcore\Models\Product;
 
 
@@ -18,15 +19,14 @@ class ProductFeed extends Product
 {
 
     public $resource = 'products_catalog';
-
     public $variantsGroup;
-
+    public $pricesComparison;
     public $descriptions;
 
     public function getSize()
     {
 
-        if (isset($this->attributeGroups['attributeGroupList']) && count($this->attributeGroups['attributeGroupList'])>0) {
+        if (isset($this->attributeGroups['attributeGroupList']) && count($this->attributeGroups['attributeGroupList']) > 0) {
             foreach ($this->attributeGroups['attributeGroupList'][0]['attributeList'] as $attr) {
                 if ($attr['attributeCode'] == 'size') {
                     return $attr['localeName'];
@@ -38,7 +38,7 @@ class ProductFeed extends Product
 
     public function getColor()
     {
-        if (isset($this->attributeGroups['attributeGroupList'])&& count($this->attributeGroups['attributeGroupList'])>0) {
+        if (isset($this->attributeGroups['attributeGroupList']) && count($this->attributeGroups['attributeGroupList']) > 0) {
             foreach ($this->attributeGroups['attributeGroupList'][0]['attributeList'] as $attr) {
                 if ($attr['attributeCode'] == 'color') {
                     return $attr['localeName'];
