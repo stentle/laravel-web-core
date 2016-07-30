@@ -31,6 +31,7 @@ class Catalog extends RestModel
     public $saved;
     public $loved;
     public $currency;
+    public $attributes;
     public $numberOfLovers;
     public $numberOfComments;
     public $numberOfProductSharing;
