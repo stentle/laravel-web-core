@@ -45,7 +45,7 @@ class Carts
             if ($cart != false) {
                 $carts[$country_active]=$cart->getInfo();
                 //check status cart and delete from session if cart active is purchased
-                if ((strtoupper($cart->getInfo()['status']) == 'CART_PURCHASED') ||(strtoupper($cart->getInfo()['status']) == 'CART_PAYING'))  {
+                if ((strtoupper($cart->getInfo()['status']) != 'CART_CREATED'))  {
                     unset($carts[$country_active]);
                     $this->resetCookiesCart();
                 }

@@ -7,6 +7,7 @@
  */
 
 namespace Stentle\LaravelWebcore\Models;
+
 use Illuminate\Support\Facades\Session;
 use Stentle\LaravelWebcore\Business\Localization;
 use Stentle\LaravelWebcore\Facades\ClientHttp;
@@ -15,7 +16,8 @@ use Stentle\LaravelWebcore\Http\RestModel;
 class Cart extends RestModel
 {
 
-    protected $resource='carts';
+
+    protected $resource = 'carts';
     public $productCartList;
     public $itemQuantity;
     public $status;
@@ -26,6 +28,7 @@ class Cart extends RestModel
     public $message;
 
     public $settings;
+
 
 
     public static function getCartFromSession()
@@ -63,15 +66,15 @@ class Cart extends RestModel
      * @return bool|Cart
      */
 
-    public static function create($product_id, $settings=[], $quantity = 1)
+    public static function create($product_id, $settings = [], $quantity = 1)
     {
 
         $cart = new Cart();
 
         $cart->productCartList = array();
         $cart->productCartList[] = array('id' => $product_id, 'requestedQuantity' => $quantity);
-        if(count($settings)>0)
-           $cart->settings =$settings;
+        if (count($settings) > 0)
+            $cart->settings = $settings;
         if ($cart->save() && !empty($cart->id)) {
             Cart::storeCartInSession($cart);
             return $cart;
@@ -89,15 +92,55 @@ class Cart extends RestModel
             $response = ClientHttp::post($this->resource . '/' . $this->id . '/checkout', $options);
 
             if ($response->getStatusCode() == 200 || $response->getStatusCode() == 201) {
-                $json= json_decode($response->getBody()->getContents(), true);
-                $this->setInfo($json['data']);
-                return true;
+                $json = json_decode($response->getBody()->getContents(), true);
+                if (isset($json['data']))
+                    $this->setInfo($json['data']);
+                return $json;
             } else {
                 return false;
             }
         } else
             return false;
 
+    }
+
+    /**
+     * Esegue il checkout con paypal.
+     * Paypal offre la possibilità di eseguire il pagamento diretto o con prelievo automatico in un momento successivo($preapproval=true).
+     * Nell'ultimo caso  se l'utente non ha mai fornito l'autorizzazione ai prelievi automatici l'api fornisce un intent per fare la redirect a paypal,
+     * altrimenti fornisce direttamente il carrello creato.
+     * @param $url_success  La url che paypal direzionerà l'utente dopo il corretto pagamento
+     * @param $url_failure   La url che paypal direzionerà l'utente in caso il pagamento fallisce
+     * @param $preapproval se true, all'utente verrà richiesta un'autorizzazione ai prelievi automatici. Se false, si procede al pagamento diretto.
+     * @param string $mode paypal ha due modalità express checkout e adaptive. Stentle attualmente utilizza quest'ultima modalità.
+     */
+    public function checkoutWithPaypal($url_success, $url_failure, $preapproval, $mode = 'adaptive')
+    {
+
+        $config['paymentService'] = 'paypal';
+        $config['paypalMode'] = $mode;
+        $config['paypalCancelUrl'] = $url_failure;
+        $config['paypalReturnUrl'] = $url_success;
+        $config['paypalPreapproval'] = $preapproval;
+        return $this->checkout($config);
+    }
+
+    /** Questa chiamata va eseguita una volta che è stato effettuato il pagamento con paypal e per forzare l'api a fare il checkout finale.
+     * @param $preapproval
+     * @param string $mode
+     * @return bool|mixed
+     */
+    public function completeCheckoutWithPaypal($preapproval='true', $mode = 'adaptive'){
+        if($this->status=='CART_PAYING') {
+            $config['paymentService'] = 'paypal';
+            $config['paypalMode'] = $mode;
+            $config['paypalCancelUrl'] = '';
+            $config['paypalReturnUrl'] = '';
+            $config['paypalPreapproval'] = $preapproval;
+            return $this->checkout($config);
+        }else{
+            return false;
+        }
     }
 
     public function setShippingAddress()
