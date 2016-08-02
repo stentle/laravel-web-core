@@ -56,38 +56,35 @@ class Cart extends RestModel
         $_COOKIE['cart_id'] = $cart->id;
     }
 
-    /**
-     * Si occupa di creare il deal usando l'api cart  di stentle
-     * @param $product_id id prodotto
-     * @param $duration duranta espressa in minuti dell'offerta
-     * @param $price prezzo
-     * @param $quantity quantità dei prodotti richiesti
-     * @return Cart|bool
+    /**Si occupa di creare un carrello con un prodotto specifico e dei settings
+     * @param $product_id
+     * @param array $settings
+     * @param int $quantity
+     * @return bool|Cart
      */
 
-    public static function create($product_id, $duration, $price, $quantity = 1)
+    public static function create($product_id, $settings=[], $quantity = 1)
     {
 
         $cart = new Cart();
 
         $cart->productCartList = array();
         $cart->productCartList[] = array('id' => $product_id, 'requestedQuantity' => $quantity);
-
-        $cart->settings = array('deal-duration' => $duration, 'deal-price' => $price);
+        if(count($settings)>0)
+           $cart->settings =$settings;
         if ($cart->save() && !empty($cart->id)) {
             Cart::storeCartInSession($cart);
             return $cart;
         } else {
             return false;
         }
-
     }
 
-    public function checkout($config)
+    public function checkout($settings)
     {
 
         if ($this->id != null) {
-            $options['json'] = $config;
+            $options['json'] = $settings;
 
             $response = ClientHttp::post($this->resource . '/' . $this->id . '/checkout', $options);
 
