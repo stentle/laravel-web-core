@@ -213,4 +213,45 @@ class Authentication implements AuthenticationContract
     {
         // TODO: Implement resendConfirmationEmail() method.
     }
+
+    /**
+     * Richiesta di cambio password
+     * @param $email
+     * @return mixed
+     */
+    public function requestChangePassword($email)
+    {
+        $options = [];
+        if (env('HTTPS', false)) {
+            $url = 'https://';
+        } else {
+            $url = 'http://';
+        }
+        $url .= env('SITE') . '/account/recovery/token/${TOKEN}';
+        $options['json'] = array('resetUrl' => $url);
+        $response = ClientHttp::post('tokens/reset-password?email=' . $email, $options);
+        if (substr($response->getStatusCode(),0,1)=='2') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /** Cambio password tramite token
+     * @param $token
+     * @param $password
+     * @return mixed
+     */
+    public function changePassword($token, $password)
+    {
+        $options = [];
+        $options['json'] = array('password' => $password);
+        $response = ClientHttp::patch('customers/auth?token=' . $token,$options);
+        if (substr($response->getStatusCode(),0,1)=='2') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

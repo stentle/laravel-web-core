@@ -68,4 +68,19 @@ interface Authentication
     public function resendConfirmationEmail($user_id);
 
 
+    /**
+     * Richiesta di cambio password
+     * @param $email
+     * @return mixed
+     */
+    public function requestChangePassword($email);
+
+
+    /** Cambio password tramite token
+     * @param $token
+     * @param $password
+     * @return mixed
+     */
+    public function changePassword($token,$password);
+
 } 

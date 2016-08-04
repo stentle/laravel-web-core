@@ -112,60 +112,6 @@ class User extends RestModel
     }
 
 
-    /**
-     * @param $data
-     * @return mixed
-     */
-    public function findByUserNameOrCreate($data, $provider)
-    {
-        // TODO: Implement findByUserNameOrCreate() method.
-    }
 
-    /**
-     * @param $provider
-     * @param $providerData
-     * @param $user
-     * @return mixed
-     */
-    public function checkIfUserNeedsUpdating($provider, $providerData, $user)
-    {
-        // TODO: Implement checkIfUserNeedsUpdating() method.
-    }
 
-    /**
-     * @param $id
-     * @param $input
-     * @return mixed
-     */
-    public function updateProfile($id, $input)
-    {
-        // TODO: Implement updateProfile() method.
-    }
-
-    /**
-     * @param $input
-     * @return mixed
-     */
-    public function changePassword($input)
-    {
-        // TODO: Implement changePassword() method.
-    }
-
-    /**
-     * @param $token
-     * @return mixed
-     */
-    public function confirmAccount($token)
-    {
-        // TODO: Implement confirmAccount() method.
-    }
-
-    /**
-     * @param $user
-     * @return mixed
-     */
-    public function sendConfirmationEmail($user)
-    {
-        // TODO: Implement sendConfirmationEmail() method.
-    }
 }
