@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: giuseppetoto
- * Date: 10/07/15
- * Time: 10:56
- */
-
 namespace Stentle\LaravelWebcore\Models;
 
 use Illuminate\Support\Facades\Session;
@@ -15,8 +8,6 @@ use Stentle\LaravelWebcore\Http\RestModel;
 
 class Cart extends RestModel
 {
-
-
     protected $resource = 'carts';
     public $productCartList;
     public $itemQuantity;
@@ -26,10 +17,7 @@ class Cart extends RestModel
     public $totals;
     public $country;
     public $message;
-
     public $settings;
-
-
 
     public static function getCartFromSession()
     {
@@ -42,7 +30,7 @@ class Cart extends RestModel
         return null;
     }
 
-    private static function storeCartInSession($cart)
+    public static function storeCartInSession($cart)
     {
         $country_active = Localization::getCountryRegionActive();
         $carts = Session::get('carts');
@@ -65,7 +53,6 @@ class Cart extends RestModel
      * @param int $quantity
      * @return bool|Cart
      */
-
     public static function create($product_id, $settings = [], $quantity = 1)
     {
 
