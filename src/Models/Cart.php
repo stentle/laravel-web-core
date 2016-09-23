@@ -92,6 +92,27 @@ class Cart extends RestModel
     }
 
     /**
+     * Changes the item quantity of the provided productId
+     * @param $productId The product id of the item
+     * @param $qt the new requested quantity
+     */
+    public function changeItemQuantity($productId, $qt)
+    {
+        $cartFromSession = Cart::getCartFromSession();
+
+        $response = ClientHttp::patch('carts/'.$cartFromSession['id'],
+            [ 'json' => ['id' => $productId, 'requestedQuantity' => $qt]]);
+
+        $cart = new Cart();
+        $cart = $cart->setInfo($response);
+
+        Cart::storeCartInSession($cart);
+
+        return $cart;
+    }
+
+
+    /**
      * Esegue il checkout con paypal.
      * Paypal offre la possibilità di eseguire il pagamento diretto o con prelievo automatico in un momento successivo($preapproval=true).
      * Nell'ultimo caso  se l'utente non ha mai fornito l'autorizzazione ai prelievi automatici l'api fornisce un intent per fare la redirect a paypal,
