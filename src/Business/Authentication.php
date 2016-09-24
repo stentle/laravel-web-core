@@ -222,12 +222,7 @@ class Authentication implements AuthenticationContract
     public function requestChangePassword($email)
     {
         $options = [];
-        if (env('HTTPS', false)) {
-            $url = 'https://';
-        } else {
-            $url = 'http://';
-        }
-        $url .= env('SITE') . '/account/recovery/token/${TOKEN}';
+        $url =env('PROTOCOL','http').'://'. env('SITE') . '/account/recovery/token/${TOKEN}';
         $options['json'] = array('resetUrl' => $url);
         $response = ClientHttp::post('tokens/reset-password?email=' . $email, $options);
         if (substr($response->getStatusCode(),0,1)=='2') {
