@@ -25,7 +25,7 @@ class StentleWebCoreProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(Router $router)
+    public function boot()
     {
         $this->app->singleton('clienthttp', function () {
 
@@ -88,7 +88,7 @@ class StentleWebCoreProvider extends ServiceProvider
 
         });
 
-        parent::boot($router);
+        parent::boot();
     }
 
     /**
