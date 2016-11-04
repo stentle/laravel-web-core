@@ -97,10 +97,33 @@ function getGeoByIp($ip)
     if (isset($_SERVER['GEOIP_CITY_COUNTRY_CODE']) && isset($_SERVER['GEOIP_CITY_CONTINENT_CODE'])) {
         $geo['geoplugin_countryCode'] = strtolower($_SERVER['GEOIP_CITY_COUNTRY_CODE']);
         $geo['geoplugin_continentCode'] = strtolower($_SERVER['GEOIP_CITY_CONTINENT_CODE']);
-        return $geo;
     } else {
         $geo = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip=$ip"));
-        $geo['geoplugin_continentCode']='eu';
+        $geo['geoplugin_countryCode'] = strtolower($geo['geoplugin_countryCode']);
+        if (!isset($geo['geoplugin_continentCode'])) {
+            $geo['geoplugin_continentCode'] = null;
+        }
+    }
+
+    switch (strtolower($geo['geoplugin_continentCode'])) { //converto il code continent in modo esteso
+        case 'eu':
+            $geo['geoplugin_continentCode'] = 'Europe';
+            break;
+        case 'as':
+            $geo['geoplugin_continentCode'] = 'Asia';
+            break;
+        case 'oc':
+            $geo['geoplugin_continentCode'] = 'Oceania';
+            break;
+        case 'na':
+        case 'sa':
+            $geo['geoplugin_continentCode'] = 'America';
+            break;
+        case 'af':
+            $geo['geoplugin_continentCode'] = 'Africa';
+            break;
+        default:
+            $geo['geoplugin_continentCode'] = null;
     }
 
     return $geo;
@@ -108,5 +131,15 @@ function getGeoByIp($ip)
 
 function getRemoteIPAddress()
 {
-    return $_SERVER['REMOTE_ADDR'];
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        return $_SERVER['HTTP_CLIENT_IP'];
+
+    } else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        return $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+        return '8.8.8.8';
+    } else {
+        return $_SERVER['REMOTE_ADDR'];
+    }
 }
