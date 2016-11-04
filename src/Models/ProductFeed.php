@@ -63,6 +63,9 @@ class ProductFeed extends Product
 
         $info['pricesComparison'] = $this->getPricesComparison();
 
+        if(!isset($info['coverPhotoUrl'])){
+            $info['coverPhotoUrl']='http://placehold.it/300x300';
+        }
         if (isset($info['photoGallery'])) {
             foreach ($info['photoGallery']['images'] as $photo) {
                 preg_match("/products\/(.*)/i", $photo['imageURL'], $matches);
