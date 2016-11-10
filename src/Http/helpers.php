@@ -98,7 +98,12 @@ function getGeoByIp($ip)
         $geo['geoplugin_countryCode'] = strtolower($_SERVER['GEOIP_CITY_COUNTRY_CODE']);
         $geo['geoplugin_continentCode'] = strtolower($_SERVER['GEOIP_CITY_CONTINENT_CODE']);
     } else {
-        $geo = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip=$ip"));
+        try {
+            $geo = unserialize(file_get_contents("http://www.geoplugin.net/php.gp?ip=$ip"));
+        } catch (Exception $e) {
+            $geo['geoplugin_countryCode'] = env('XCODE_DEFAULT','it');
+            $geo['geoplugin_continentCode'] = env('XREGION_DEFAULT','Europe');
+        }
         $geo['geoplugin_countryCode'] = strtolower($geo['geoplugin_countryCode']);
         if (!isset($geo['geoplugin_continentCode'])) {
             $geo['geoplugin_continentCode'] = null;
@@ -107,23 +112,29 @@ function getGeoByIp($ip)
 
     switch (strtolower($geo['geoplugin_continentCode'])) { //converto il code continent in modo esteso
         case 'eu':
+        case 'europe':
             $geo['geoplugin_continentCode'] = 'Europe';
             break;
         case 'as':
+        case 'asia':
             $geo['geoplugin_continentCode'] = 'Asia';
             break;
         case 'oc':
+        case 'oceania':
             $geo['geoplugin_continentCode'] = 'Oceania';
             break;
+        case 'america':
         case 'na':
         case 'sa':
             $geo['geoplugin_continentCode'] = 'America';
             break;
+        case 'africa':
         case 'af':
             $geo['geoplugin_continentCode'] = 'Africa';
             break;
         default:
-            $geo['geoplugin_continentCode'] = null;
+            $geo['geoplugin_countryCode'] = env('XCODE_DEFAULT','it');
+            $geo['geoplugin_continentCode'] = env('XREGION_DEFAULT','Europe');
     }
 
     return $geo;

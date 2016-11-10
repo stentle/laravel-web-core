@@ -56,10 +56,6 @@ class Localization
         return $next($request);
     }
 
-    private function resetCookiesCart()
-    {
-        setcookie('cart_id', null, time()-3600, '/');
-        $_COOKIE['cart_id'] = null;
-    }
+
 
 }
