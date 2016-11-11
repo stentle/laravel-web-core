@@ -5,6 +5,7 @@ namespace Stentle\LaravelWebcore\Business;
 use DrewM\MailChimp\MailChimp;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
+use Stentle\LaravelWebcore\Models\Cart;
 use Stentle\LaravelWebcore\Models\Country;
 
 class Localization
@@ -18,7 +19,7 @@ class Localization
         } else if (isset($_COOKIE['X-Region'])) {
             return $_COOKIE['X-Region'];
         } else
-            return 'it';
+            return env('XCOUNTRY_DEFAULT','it');
     }
 
 
@@ -33,6 +34,7 @@ class Localization
         $_COOKIE['X-Country-Code'] = $country;
         setcookie("X-Region", $region, time() + env('SESSION_DURATION') * 60, '/');
         $_COOKIE['X-Region'] = $region;
+        Cart::switchCartInSession(Localization::getCountryRegionActive());
     }
 
     static public function updateAutomatic()

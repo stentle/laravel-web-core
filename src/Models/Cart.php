@@ -24,10 +24,30 @@ class Cart extends RestModel
         $country_active = Localization::getCountryRegionActive();
         $carts = Session::get('carts');
         if (is_array($carts) && isset($carts[$country_active])) {
+            self::activeCartInSession($carts[$country_active]['id']);
             return $carts[$country_active];
         }
 
         return null;
+    }
+
+    public static function deleteCartFromSession($cart_id)
+    {
+        $carts = Session::get('carts');
+        if (is_array($carts)) {
+            foreach ($carts as $country => $cart) {
+                if ($cart['id'] == $cart_id) {
+                    unset($carts[$country]);
+                    Session::put('carts', $carts);
+                    if (self::getCartIDActive() == $cart_id) {
+                        self::resetCartActive();
+                    }
+
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static function storeCartInSession($cart)
@@ -38,13 +58,42 @@ class Cart extends RestModel
             $carts = [];
         $carts[$country_active] = $cart->getInfo();
         Session::put('carts', $carts);
-        Cart::activeCartInSession($cart);
+        Cart::activeCartInSession($cart->id);
     }
 
-    private static function activeCartInSession($cart)
+    public static function switchCartInSession($country_region)
     {
-        setcookie('cart_id', $cart->id, time() + env('SESSION_DURATION') * 60, '/');
-        $_COOKIE['cart_id'] = $cart->id;
+        $carts = Session::get('carts');
+        if (is_array($carts)) {
+            foreach ($carts as $key => $cart) {
+                if ($key == $country_region) {
+                    Cart::activeCartInSession($cart->id);
+                    return true;
+                }
+            }
+        }
+
+        self::resetCartActive();
+
+        return false;
+    }
+
+
+    private static function activeCartInSession($cart_id)
+    {
+        setcookie('cart_id', $cart_id, time() + env('SESSION_DURATION') * 60, '/');
+        $_COOKIE['cart_id'] = $cart_id;
+    }
+
+    public static function getCartIDActive()
+    {
+        return $_COOKIE['cart_id'];
+    }
+
+    public static function resetCartActive()
+    {
+        setcookie('cart_id', null, time() - 3600, '/');
+        $_COOKIE['cart_id'] = null;
     }
 
     /**Si occupa di creare un carrello con un prodotto specifico e dei settings
@@ -100,8 +149,8 @@ class Cart extends RestModel
     {
         $cartFromSession = Cart::getCartFromSession();
 
-        $response = ClientHttp::patch('carts/'.$cartFromSession['id'],
-            [ 'json' => ['id' => $productId, 'requestedQuantity' => $qt]]);
+        $response = ClientHttp::patch('carts/' . $cartFromSession['id'],
+            ['json' => ['id' => $productId, 'requestedQuantity' => $qt]]);
 
         $cart = new Cart();
         $cart = $cart->setInfo($response);
@@ -138,15 +187,16 @@ class Cart extends RestModel
      * @param string $mode
      * @return bool|mixed
      */
-    public function completeCheckoutWithPaypal($preapproval='true', $mode = 'adaptive'){
-        if($this->status=='CART_PAYING') {
+    public function completeCheckoutWithPaypal($preapproval = 'true', $mode = 'adaptive')
+    {
+        if ($this->status == 'CART_PAYING') {
             $config['paymentService'] = 'paypal';
             $config['paypalMode'] = $mode;
             $config['paypalCancelUrl'] = '';
             $config['paypalReturnUrl'] = '';
             $config['paypalPreapproval'] = $preapproval;
             return $this->checkout($config);
-        }else{
+        } else {
             return false;
         }
     }

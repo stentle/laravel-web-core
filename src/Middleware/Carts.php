@@ -29,40 +29,22 @@ class Carts
      */
     public function handle($request, Closure $next)
     {
-         $country_active=$_COOKIE['country_active'];
 
-        //check cart_id active
-        $carts = Session::get('carts');
-        if (!empty($carts) && is_array($carts) && $country_active!=null && isset($carts[$country_active])) {
-           //store cart_id active in session
-            setcookie('cart_id', $carts[$country_active]['id'], time()+env('SESSION_DURATION')*60, '/');
-            $_COOKIE['cart_id'] = $carts[$country_active]['id'];
-
+        $cart_session = Cart::getCartFromSession();
+        if (!empty($cart_session)) {
             //updated object cart active
             $cart = new Cart();
-            $cart = $cart->find($carts[$country_active]['id']);
-
+            $cart = $cart->find($cart_session['id']);
             if ($cart != false) {
-                $carts[$country_active]=$cart->getInfo();
                 //check status cart and delete from session if cart active is purchased
-                if ((strtoupper($cart->getInfo()['status']) != 'CART_CREATED'))  {
-                    unset($carts[$country_active]);
-                    $this->resetCookiesCart();
+                if ((strtoupper($cart->getInfo()['status']) != 'CART_CREATED')) {
+                    Cart::deleteCartFromSession($cart->id);
                 }
-                //update carts in session
-                Session::set('carts',$carts);
             }
-        } else {
-            $this->resetCookiesCart();
         }
 
         return $next($request);
     }
 
-    private function resetCookiesCart()
-    {
-        setcookie('cart_id', null, time()-3600, '/');
-        $_COOKIE['cart_id'] = null;
-    }
 
 }
