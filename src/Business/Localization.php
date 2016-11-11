@@ -19,7 +19,7 @@ class Localization
         } else if (isset($_COOKIE['X-Region'])) {
             return $_COOKIE['X-Region'];
         } else
-            return env('XCOUNTRY_DEFAULT','it');
+            return env('XCODE_DEFAULT','it');
     }
 
 
