@@ -41,9 +41,12 @@ class Entity
             $key = $p->getName();
             if ($this->$key !== NULL && !in_array($key, $exclude)) {
                 if ($this->is_JSON($this->$key)) {
-                    $info[$key]=json_decode($this->$key);
+                    $info[$key] = json_decode($this->$key);
                 } else {
                     $info[$key] = $this->$key;
+                }
+                if(is_infinite((float) $info[$key])){
+                    $info[$key] = (string)$info[$key];
                 }
             }
         }
@@ -99,11 +102,12 @@ class Entity
         }
     }
 
-     public function __get($property) {
-         if (property_exists($this, $property)) {
-             return $this->country;
-         }
-     }
+    public function __get($property)
+    {
+        if (property_exists($this, $property)) {
+            return $this->country;
+        }
+    }
 
     public function __set($property, $value)
     {
@@ -117,10 +121,10 @@ class Entity
 
     function is_JSON($value)
     {
-        if(!empty($value)&&is_string($value)) {
+        if (!empty($value) && is_string($value)) {
             json_decode($value);
             return (json_last_error() === JSON_ERROR_NONE);
-        }else{
+        } else {
             return false;
         }
     }
