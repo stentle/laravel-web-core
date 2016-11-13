@@ -45,9 +45,6 @@ class Entity
                 } else {
                     $info[$key] = $this->$key;
                 }
-                if(is_infinite((float) $info[$key])){
-                    $info[$key] = (string)$info[$key];
-                }
             }
         }
         return $info;
@@ -75,7 +72,6 @@ class Entity
                 }
             }
         }
-
     }
 
     /**
@@ -119,13 +115,9 @@ class Entity
         }
     }
 
-    function is_JSON($value)
+    function is_JSON($string)
     {
-        if (!empty($value) && is_string($value)) {
-            json_decode($value);
-            return (json_last_error() === JSON_ERROR_NONE);
-        } else {
-            return false;
-        }
+        return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
     }
+
 }
