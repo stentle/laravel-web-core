@@ -119,6 +119,15 @@ class Cart extends RestModel
         }
     }
 
+    /**
+     * Esegue il checkout con paypal.
+     * Restituisce la risposta dell'api.
+     * Paypal offre la possibilità di eseguire il pagamento diretto o con prelievo automatico in un momento successivo($preapproval=true).
+     * Nell'ultimo caso  se l'utente non ha mai fornito l'autorizzazione ai prelievi automatici l'api fornisce un intent per fare la redirect a paypal,
+     * altrimenti fornisce la risposta del carrello con il suo status aggiornato. Nell'ultimo caso l'oggetto stesso viene aggiornato con la risposta.
+     * @param $settings
+     * @return bool|mixed
+     */
     public function checkout($settings)
     {
 
@@ -163,9 +172,10 @@ class Cart extends RestModel
 
     /**
      * Esegue il checkout con paypal.
+     * Restituisce la risposta dell'api.
      * Paypal offre la possibilità di eseguire il pagamento diretto o con prelievo automatico in un momento successivo($preapproval=true).
      * Nell'ultimo caso  se l'utente non ha mai fornito l'autorizzazione ai prelievi automatici l'api fornisce un intent per fare la redirect a paypal,
-     * altrimenti fornisce direttamente il carrello creato.
+     * altrimenti fornisce la risposta del carrello con il suo status aggiornato. Nell'ultimo caso l'oggetto stesso viene aggiornato con la risposta.
      * @param $url_success  La url che paypal direzionerà l'utente dopo il corretto pagamento
      * @param $url_failure   La url che paypal direzionerà l'utente in caso il pagamento fallisce
      * @param $preapproval se true, all'utente verrà richiesta un'autorizzazione ai prelievi automatici. Se false, si procede al pagamento diretto.

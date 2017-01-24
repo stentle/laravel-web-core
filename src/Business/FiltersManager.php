@@ -50,6 +50,9 @@ class FiltersManager
         if (isset($this->filter['advanced'])) {
             foreach ($this->filter['advanced'] as $row) {
                 if ($row['key'] == 'brand') {
+                    usort($row['values'], function ($a, $b) {
+                        return strcmp($a['locale'], $b['locale']);
+                    });
                     return $row['values'];
                 }
             }
