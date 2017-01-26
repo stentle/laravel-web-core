@@ -67,7 +67,7 @@ class Cart extends RestModel
         if (is_array($carts)) {
             foreach ($carts as $key => $cart) {
                 if ($key == $country_region) {
-                    Cart::activeCartInSession($cart->id);
+                    Cart::activeCartInSession($cart['id']);
                     return true;
                 }
             }
