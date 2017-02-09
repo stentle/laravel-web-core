@@ -19,6 +19,20 @@ class Cart extends RestModel
     public $message;
     public $settings;
 
+    const CART_PAYMENT_AUTHORIZED='CART_PAYMENT_AUTHORIZED';
+    const CART_PURCHASED='CART_PURCHASED';
+    const CART_DELETED='CART_DELETED';
+    const CART_INITIALIZED='CART_INITIALIZED';
+    const CART_PAYING='CART_PAYING';
+    const CART_PAYMENT_VERIFIED='CART_PAYMENT_VERIFIED';
+    const CART_ABANDONED='CART_ABANDONED';
+    const CART_WAITING_FOR_PAYMENT='CART_WAITING_FOR_PAYMENT';
+    const CART_PAYMENT_ERROR='CART_PAYMENT_ERROR';
+    const CART_PAYMENT_SETTLED='CART_PAYMENT_SETTLED';
+    const CART_ERROR='CART_ERROR';
+    const CART_CREATED='CART_CREATED';
+
+
     public static function getCartFromSession()
     {
         $country_active = Localization::getCountryRegionActive();
@@ -183,7 +197,6 @@ class Cart extends RestModel
      */
     public function checkoutWithPaypal($url_success, $url_failure, $preapproval, $mode = 'adaptive')
     {
-
         $config['paymentService'] = 'paypal';
         $config['paypalMode'] = $mode;
         $config['paypalCancelUrl'] = $url_failure;
