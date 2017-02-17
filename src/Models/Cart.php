@@ -17,6 +17,8 @@ class Cart extends RestModel
     public $totals;
     public $country;
     public $message;
+    public $order;
+    public $shippingAddress;
     public $settings;
 
     const CART_PAYMENT_AUTHORIZED='CART_PAYMENT_AUTHORIZED';
@@ -224,22 +226,4 @@ class Cart extends RestModel
         }
     }
 
-    public function setShippingAddress()
-    {
-
-        if ($this->id != null) {
-
-        } else {
-            throw new \Exception("cart_id is notdefined");
-        }
-    }
-
-    public function setBillingAddress()
-    {
-        if ($this->id != null) {
-
-        } else {
-            throw new \Exception("cart_id is notdefined");
-        }
-    }
 }
