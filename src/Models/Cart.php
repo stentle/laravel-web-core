@@ -35,6 +35,8 @@ class Cart extends RestModel
     const CART_CREATED='CART_CREATED';
 
 
+    const CART_CLOSING = 'CART_CLOSING'; //hack
+
     public static function getCartFromSession()
     {
         $country_active = Localization::getCountryRegionActive();
