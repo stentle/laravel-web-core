@@ -107,27 +107,23 @@ class StentleWebCoreProvider extends ServiceProvider
 
             $headers = Config::get('stentle.headers');
             if (!isset($_COOKIE['locale'])) {
-                $locale = env('LOCALE_DEFAULT','en');
+                $locale = env('LOCALE_DEFAULT', 'en');
             } else {
                 $locale = $_COOKIE['locale'];
             }
 
-            if (!isset($_COOKIE['X-Country-Code'])) {
-                $isocode = env('XCOUNTRY_DEFAULT','it');
-            } else {
-                $isocode = $_COOKIE['X-Country-Code'];
-            }
 
-            if (!isset($_COOKIE['X-Region'])) {
-                $region = env('XREGION_DEFAULT','Europe');
+            if (!isset($_COOKIE['X-Country-Code']) && !isset($_COOKIE['X-Region'])) {
+                $headers['X-Region'] = env('XREGION_DEFAULT', 'Europe');
+            } else if (isset($_COOKIE['X-Country-Code'])) {
+                $headers['X-Country-Code'] = $_COOKIE['X-Country-Code'];
             } else {
-                $region = $_COOKIE['X-Region'];
+                $headers['X-Region'] = $_COOKIE['X-Region'];
             }
 
 
             $headers['Accept-Language'] = $locale;
-            $headers['X-Country-Code'] = $isocode;
-            $headers['X-Region'] = $region;
+
             return new Client(['handler' => $stack, 'http_errors' => true, 'base_uri' => Config::get('stentle.api'), 'headers' => $headers, 'cookies' => true]);
 
         });
