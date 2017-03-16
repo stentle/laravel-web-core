@@ -83,4 +83,6 @@ interface Authentication
      */
     public function changePassword($token,$password);
 
+
+    static public function clearAuthSession();
 } 
