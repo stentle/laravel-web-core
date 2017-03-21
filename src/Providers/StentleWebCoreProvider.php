@@ -87,11 +87,12 @@ class StentleWebCoreProvider extends ServiceProvider
                             'body_request' => $this->last_request->getBody()->getContents(),
                             'headers_request' => $this->last_request->getHeaders(),
                             'body_response' => json_decode($content, true),
-                            'headers_response'=>$response->getHeaders()
+                            'headers_response' => $response->getHeaders()
                         ]
                     );
                 }
-                if($response->getStatusCode()=='403'){ //in caso abbiamo un errore di autenticazione da parte dell'api pulisco la sessione
+                //in caso il token di sessione è invalido pulisco la sessione
+                if ($response->getStatusCode() == 403 || ($response->getStatusCode() == 401 && strpos($this->last_request->getUri()->getPath(), 'login') === false)) {
                     Authentication::clearAuthSession();
                     abort(403);
                 }
