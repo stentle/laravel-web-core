@@ -3,7 +3,6 @@
 namespace Stentle\LaravelWebcore\Providers;
 
 
-use Illuminate\Support\Facades\Auth;
 use Stentle\LaravelWebcore\Business\Authentication;
 use Stentle\LaravelWebcore\Models\User;
 use GuzzleHttp\Client;
@@ -92,8 +91,9 @@ class StentleWebCoreProvider extends ServiceProvider
                         ]
                     );
                 }
-                if($response->getStatusCode()=='401'){ //in caso abbiamo un errore di autentificazione da parte dell'api pulisco la sessione
+                if($response->getStatusCode()=='403'){ //in caso abbiamo un errore di autenticazione da parte dell'api pulisco la sessione
                     Authentication::clearAuthSession();
+                    abort(403);
                 }
                 return $response->withHeader('Content-Length', strlen($content));
             }));
