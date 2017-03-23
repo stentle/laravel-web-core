@@ -11,6 +11,7 @@ use Stentle\LaravelWebcore\Models\Country;
 class Localization
 {
 
+    static $countriesCache;
 
     static public function getCountryRegionActive()
     {
@@ -19,13 +20,16 @@ class Localization
         } else if (isset($_COOKIE['X-Region'])) {
             return $_COOKIE['X-Region'];
         } else
-            return env('XCODE_DEFAULT','it');
+            return env('XCODE_DEFAULT', 'it');
     }
 
 
     static public function countries()
     {
-        return (new Country())->all();
+        if (self::$countriesCache == null) {
+            self::$countriesCache = (new Country())->all();
+        }
+        return self::$countriesCache;
     }
 
     static public function setCountry($region, $country)
