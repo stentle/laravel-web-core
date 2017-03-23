@@ -222,10 +222,10 @@ class Authentication implements AuthenticationContract
     public function requestChangePassword($email)
     {
         $options = [];
-        $url =env('PROTOCOL','http').'://'. env('SITE') . '/account/recovery/token/${TOKEN}';
+        $url = env('PROTOCOL', 'http') . '://' . env('SITE') . '/account/recovery/token/${TOKEN}';
         $options['json'] = array('resetUrl' => $url);
         $response = ClientHttp::post('tokens/reset-password?email=' . $email, $options);
-        if (substr($response->getStatusCode(),0,1)=='2') {
+        if (substr($response->getStatusCode(), 0, 1) == '2') {
             return true;
         } else {
             return false;
@@ -242,24 +242,26 @@ class Authentication implements AuthenticationContract
     {
         $options = [];
         $options['json'] = array('password' => $password);
-        $response = ClientHttp::patch('customers/auth?token=' . $token,$options);
-        if (substr($response->getStatusCode(),0,1)=='2') {
+        $response = ClientHttp::patch('customers/auth?token=' . $token, $options);
+        if (substr($response->getStatusCode(), 0, 1) == '2') {
             return true;
         } else {
             return false;
         }
     }
 
-    static public function clearAuthSession()
+    public function clearAuthSession()
     {
-
-        \Illuminate\Support\Facades\Session::flush();
+        $this->session->forget('user');
+        $this->session->forget('carts');
+        $this->session->forget('cookie');
         setcookie("token", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("email", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("password", -1, time() - env('SESSION_DURATION') * 60, '/');
+        setcookie("cart_id", -1, time() - env('SESSION_DURATION') * 60, '/');
         unset($_COOKIE['token']);
         unset($_COOKIE['email']);
         unset($_COOKIE['password']);
-
+        unset($_COOKIE['cart_id']);
     }
 }

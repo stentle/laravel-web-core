@@ -4,6 +4,7 @@ namespace Stentle\LaravelWebcore\Providers;
 
 
 use Stentle\LaravelWebcore\Business\Authentication;
+use Stentle\LaravelWebcore\Exceptions\Code;
 use Stentle\LaravelWebcore\Models\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\CurlHandler;
@@ -93,8 +94,9 @@ class StentleWebCoreProvider extends ServiceProvider
                 }
                 //in caso il token di sessione è invalido pulisco la sessione
                 if ($response->getStatusCode() == 403 || ($response->getStatusCode() == 401 && strpos($this->last_request->getUri()->getPath(), 'login') === false)) {
-                    Authentication::clearAuthSession();
-                    abort(403);
+                    $auth = $this->app->make('Stentle\LaravelWebcore\Contracts\Authentication');
+                    $auth->clearAuthSession();
+                    abort(403,Code::SESSIONEXPIRED);
                 }
                 return $response->withHeader('Content-Length', strlen($content));
             }));
