@@ -39,6 +39,8 @@ class Carts
                 //check status cart and delete from session if cart active is purchased
                 if ((strtoupper($cart->getInfo()['status']) != 'CART_CREATED')) {
                     Cart::deleteCartFromSession($cart->id);
+                } else {
+                    Cart::storeCartInSession($cart);
                 }
             }
         }
