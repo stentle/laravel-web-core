@@ -66,11 +66,12 @@ class ProductFeed extends Product
         if(!isset($info['coverPhotoUrl'])){
             $info['coverPhotoUrl']='http://placehold.it/300x300';
         }
+
+
         if (isset($info['photoGallery'])) {
             foreach ($info['photoGallery']['images'] as $photo) {
-                preg_match("/products\/(.*)/i", $photo['imageURL'], $matches);
-                if (count($matches) > 1)
-                    $info['gallery'][] = '/image/loadProduct/' . $matches[1];
+                if ($photo['type'] == 'cover')
+                    $info['coverPhotoUrl'] = $photo['imageURL'];
                 else
                     $info['gallery'][] = $photo['imageURL'];
             }
