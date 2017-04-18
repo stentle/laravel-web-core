@@ -25,6 +25,16 @@ class ProductFeed extends Product
     public $productVariant;
     public $defaultPricesComparison;
     public $sku;
+    public $attributeGroups;
+    public $photos;
+    public $availableSizes;
+    public $attributeVariants;
+    public $sellingDiscount;
+    public $retailPrice;
+    public $sellingPrice;
+    public $currency;
+    public $coverPhotoUrl;
+
 
     public  function getSize()
     {
