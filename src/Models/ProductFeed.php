@@ -168,15 +168,15 @@ class ProductFeed extends Product
 
                     $keysize1=$item1['value'];
                     $keysize2=$item2['value'];
-                    if (is_string($keysize1) && is_string($keysize2)) { //se è una stringa li valuto come delle taglie
+                    if (is_numeric($keysize1) && is_numeric($keysize2)) { //se è una stringa li valuto come delle taglie
+                        if ($item1['value'] == $item2['value']) return 0;
+                        return $item1['value'] < $item2['value'] ? -1 : 1;
+                    } else {
                         $asize = @$sizes[$keysize1];
                         $bsize = @$sizes[$keysize2];
                         if ($asize == $bsize)
                             return 0;
                         return ($asize > $bsize) ? 1 : -1;
-                    } else {
-                        if ($item1['value'] == $item2['value']) return 0;
-                        return $item1['value'] < $item2['value'] ? -1 : 1;
                     }
 
                 });
