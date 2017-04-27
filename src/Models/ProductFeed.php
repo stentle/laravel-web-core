@@ -150,8 +150,40 @@ class ProductFeed extends Product
                     else
                         $photos[] = $photo['imageURL'];
                 } //per ogni attributo padre (es. colore giallo) mappo i figli (es. size 41, 42, etc.)
-                $obj['values'][] = ['keyChildrenVariants' => $obj['keyChildrenVariants'], 'key' => $obj['key'], 'value' => $el['key'], 'name' => $el['localeName'], 'photos' => $photos, 'variants' => $this->getChildrenVariants($el['key'])];
+                $item = ['keyChildrenVariants' => $obj['keyChildrenVariants'], 'key' => $obj['key'], 'value' => $el['key'], 'name' => $el['localeName'], 'photos' => $photos, 'variants' => $this->getChildrenVariants($el['key'])];
+
+
+                //riordino per valore attributo
+                usort($item['variants'], function ($item1, $item2) {
+
+                    $sizes = array(
+                        'XXS' => 0,
+                        'XS' => 1,
+                        'S' => 2,
+                        'M' => 3,
+                        'L' => 4,
+                        'XL' => 5,
+                        'XXL' => 6
+                    );
+
+                    $keysize1=$item1['value'];
+                    $keysize2=$item2['value'];
+                    if (is_string($keysize1) && is_string($keysize2)) { //se è una stringa li valuto come delle taglie
+                        $asize = @$sizes[$keysize1];
+                        $bsize = @$sizes[$keysize2];
+                        if ($asize == $bsize)
+                            return 0;
+                        return ($asize > $bsize) ? 1 : -1;
+                    } else {
+                        if ($item1['value'] == $item2['value']) return 0;
+                        return $item1['value'] < $item2['value'] ? -1 : 1;
+                    }
+
+                });
+                $obj['values'][] = $item;
+
             }
+
             return $obj;
         }
         return false;
@@ -219,9 +251,30 @@ class ProductFeed extends Product
                     }
                     //riordino per valore attributo
                     usort($children, function ($item1, $item2) {
-                        if ($item1['value'] == $item2['value']) return 0;
-                        return $item1['value'] < $item2['value'] ? -1 : 1;
+
+                        $sizes = array(
+                            'XXS' => 0,
+                            'XS' => 1,
+                            'S' => 2,
+                            'M' => 3,
+                            'L' => 4,
+                            'XL' => 5,
+                            'XXL' => 6
+                        );
+
+                        if (is_string($item1['value']) && is_string($item2['value'])) {
+                            $asize = @$sizes[$item1];
+                            $bsize = @$sizes[$item2];
+                            if ($asize == $bsize)
+                                return 0;
+                            return ($asize > $bsize) ? 1 : -1;
+                        } else {
+                            if ($item1['value'] == $item2['value']) return 0;
+                            return $item1['value'] < $item2['value'] ? -1 : 1;
+                        }
+
                     });
+
 
                     return $children;
                 }
