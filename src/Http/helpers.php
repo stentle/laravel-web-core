@@ -76,6 +76,15 @@ function isActiveLanguage($value)
         return 'active';
 }
 
+
+function getShipToActive(){
+    if (isset($_COOKIE['X-Country-Code']))
+        return $_COOKIE['X-Country-Code'];
+    else    if (isset($_COOKIE['X-Region']))
+        return $_COOKIE['X-Region'];
+    else
+        return env('XREGION_DEFAULT','Europe');
+}
 function isItemMenuActive($value)
 {
 
