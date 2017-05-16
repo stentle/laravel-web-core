@@ -23,7 +23,6 @@ class ProductFeed extends Product
     public $variantsGroup;
     public $pricesComparison;
     public $descriptions;
-    public $productVariant;
     public $defaultPricesComparison;
     public $sku;
     public $attributeGroups;
@@ -65,7 +64,10 @@ class ProductFeed extends Product
 
     public function getParentAttributeKey()
     {
-        return $this->photoAttributes[0];
+        if (!is_array($this->photoAttributes))
+            return 'color';
+        else
+            return $this->photoAttributes[0];
     }
 
     public function getInfo($exclude = array())
@@ -94,7 +96,7 @@ class ProductFeed extends Product
 
     public function hasVariantsGroup()
     {
-        return $this->productVariant && isset($this->variantsGroup) && count($this->variantsGroup) > 0;
+        return isset($this->variantsGroup) && count($this->variantsGroup) > 0;
     }
 
     /**Recupera le informazioni relative ai prezzi dei prodotti venduti da altri merchant.
@@ -195,6 +197,7 @@ class ProductFeed extends Product
      */
     public function findVariantGroupById($id)
     {
+
         $variantsGroup = $this->getVariantsGroup();
         if ($variantsGroup && $id) {
             foreach ($variantsGroup['values'] as $group) {
