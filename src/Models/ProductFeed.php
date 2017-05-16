@@ -8,6 +8,7 @@
 
 namespace Stentle\LaravelWebcore\Models;
 
+use Stentle\LaravelWebcore\Facades\ClientHttp;
 use Stentle\LaravelWebcore\Models\Product;
 
 
@@ -36,7 +37,7 @@ class ProductFeed extends Product
     public $coverPhotoUrl;
 
 
-    public  function getSize()
+    public function getSize()
     {
 
         if (isset($this->attributeGroups['attributeGroupList']) && count($this->attributeGroups['attributeGroupList']) > 0) {
@@ -73,8 +74,8 @@ class ProductFeed extends Product
 
         $info['pricesComparison'] = $this->getPricesComparison();
 
-        if(!isset($info['coverPhotoUrl'])){
-            $info['coverPhotoUrl']='http://placehold.it/300x300';
+        if (!isset($info['coverPhotoUrl'])) {
+            $info['coverPhotoUrl'] = 'http://placehold.it/300x300';
         }
 
 
@@ -166,8 +167,8 @@ class ProductFeed extends Product
                         'XXL' => 6
                     );
 
-                    $keysize1=$item1['value'];
-                    $keysize2=$item2['value'];
+                    $keysize1 = $item1['value'];
+                    $keysize2 = $item2['value'];
                     if (is_numeric($keysize1) && is_numeric($keysize2)) { //se è una stringa li valuto come delle taglie
                         if ($item1['value'] == $item2['value']) return 0;
                         return $item1['value'] < $item2['value'] ? -1 : 1;
@@ -282,7 +283,77 @@ class ProductFeed extends Product
 
         }
 
+
         return false;
+    }
+
+
+    public function all()
+    {
+        return $this->search();
+    }
+
+
+    /**
+     * Search for products in the catalog with the ability to filter and imagine
+     * array['basic'] array with the basic filters
+     * array['advanced'] array with the advanced filters
+     * array['range']  array that represent the range
+     * array['pageNumber'] integer the requested page number
+     * array['limit'] integer the maximum elements to fetch
+     * @param array $filter (see above) or use createFilter
+     * @return mixed
+     * @throws \Exception
+     */
+
+    public static function search($filter = array())
+    {
+        $options = [];
+
+        if (empty($filter)) {
+            $filter = self::createFilter([], [], [], 1, 100);
+        }
+        $options['headers']['Accept'] = 'application/stentle.api-v0.2+json';
+        $options['json'] = $filter; //filters
+
+        $response = ClientHttp::post('catalog', $options);
+
+        if ($response->getStatusCode() >= 400)
+            throw new \Exception("catalog search request failed with code: " . $response->getStatusCode());
+        else
+            $json = json_decode($response->getBody()->getContents(), true);
+
+        $products = [];
+        $items = $json['data']['result']['items'];
+
+        foreach ($json['data']['result']['items'] as $item) {
+
+            $p = (new ProductFeed());
+            $p->setInfo($item);
+            $products[] = $p;
+        }
+
+        $json['data']['result']['items'] = $products;
+        return $json;
+    }
+
+    /**
+     * Returns an array that represent a filter
+     * @param array $basic array with the basic filters
+     * @param array $advanced array with the advanced filters
+     * @param array $range array that represent the range
+     * @param integer $pageNumber the requested page number
+     * @param integer $limit the maximum elements to fetch
+     * @return array
+     */
+    public static function createFilter($basic, $advanced, $range, $pageNumber, $limit)
+    {
+        return ['filterAttributes' => [
+            'basic' => $basic,
+            'advanced' => $advanced,
+            'range' => $range,
+        ], 'pageNumber' => $pageNumber,
+            'limit' => $limit];
     }
 
 }
