@@ -92,11 +92,12 @@ class StentleWebCoreProvider extends ServiceProvider
                         ]
                     );
                 }
-                //in caso il token di sessione è invalido pulisco la sessione
-                if ($response->getStatusCode() == 403 || ($response->getStatusCode() == 401 && strpos($this->last_request->getUri()->getPath(), 'login') === false)) {
+                //in caso il token di sessione è invalido pulisco la sessione -
+                //HACK: Quando scade la sessione, attualmente l'api  mi restituisce un codice generico per indicarmi quando una sessione scade, che però può andare in conflitto con il codice errore restituito in altre situazioni
+                if ($response->getStatusCode() == 403  && strpos($this->last_request->getUri()->getPath(), 'auth') === false || ($response->getStatusCode() == 401 && strpos($this->last_request->getUri()->getPath(), 'login') === false && strpos($this->last_request->getUri()->getPath(), 'recovery') === false)) {
                     $auth = $this->app->make('Stentle\LaravelWebcore\Contracts\Authentication');
                     $auth->clearAuthSession();
-                    abort(403,Code::SESSIONEXPIRED);
+                    abort(403, Code::SESSIONEXPIRED);
                 }
                 return $response->withHeader('Content-Length', strlen($content));
             }));
