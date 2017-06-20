@@ -73,6 +73,7 @@ class RestModel extends Entity implements DAOInterface
         $instance = new static;
         $proxy = $instance->proxy;
 
+        $instance->rootProperty=$this->rootProperty; //hack
         if ($proxy instanceof RestProxy) {
 
 

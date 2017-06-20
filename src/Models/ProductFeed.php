@@ -296,6 +296,17 @@ class ProductFeed extends Product
         return $this->search();
     }
 
+    public function productsCorrelation($page = 1, $limit = 9)
+    {
+        if ($this->id != null) {
+            $this->resource = 'catalog/product/' . $this->id . '/related?pageNumber=' . $page . '&limit=' . $limit;
+            $this->rootProperty = 'result.items';
+            return parent::all();
+        } else {
+            throw  new Exception("id product not defined");
+        }
+    }
+
 
     /**
      * Search for products in the catalog with the ability to filter and imagine
