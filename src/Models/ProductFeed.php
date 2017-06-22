@@ -303,7 +303,7 @@ class ProductFeed extends Product
             $this->rootProperty = 'result.items';
             return parent::all();
         } else {
-            throw  new Exception("id product not defined");
+            throw  new \Exception("id product not defined");
         }
     }
 
