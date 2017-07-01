@@ -21,18 +21,18 @@ class Cart extends RestModel
     public $shippingAddress;
     public $settings;
 
-    const CART_PAYMENT_AUTHORIZED='CART_PAYMENT_AUTHORIZED';
-    const CART_PURCHASED='CART_PURCHASED';
-    const CART_DELETED='CART_DELETED';
-    const CART_INITIALIZED='CART_INITIALIZED';
-    const CART_PAYING='CART_PAYING';
-    const CART_PAYMENT_VERIFIED='CART_PAYMENT_VERIFIED';
-    const CART_ABANDONED='CART_ABANDONED';
-    const CART_WAITING_FOR_PAYMENT='CART_WAITING_FOR_PAYMENT';
-    const CART_PAYMENT_ERROR='CART_PAYMENT_ERROR';
-    const CART_PAYMENT_SETTLED='CART_PAYMENT_SETTLED';
-    const CART_ERROR='CART_ERROR';
-    const CART_CREATED='CART_CREATED';
+    const CART_PAYMENT_AUTHORIZED = 'CART_PAYMENT_AUTHORIZED';
+    const CART_PURCHASED = 'CART_PURCHASED';
+    const CART_DELETED = 'CART_DELETED';
+    const CART_INITIALIZED = 'CART_INITIALIZED';
+    const CART_PAYING = 'CART_PAYING';
+    const CART_PAYMENT_VERIFIED = 'CART_PAYMENT_VERIFIED';
+    const CART_ABANDONED = 'CART_ABANDONED';
+    const CART_WAITING_FOR_PAYMENT = 'CART_WAITING_FOR_PAYMENT';
+    const CART_PAYMENT_ERROR = 'CART_PAYMENT_ERROR';
+    const CART_PAYMENT_SETTLED = 'CART_PAYMENT_SETTLED';
+    const CART_ERROR = 'CART_ERROR';
+    const CART_CREATED = 'CART_CREATED';
 
 
     const CART_CLOSING = 'CART_CLOSING'; //hack
@@ -226,6 +226,28 @@ class Cart extends RestModel
         } else {
             return false;
         }
+    }
+
+    /**
+     * Consente di riportare il carrello da CART PAYINING a CART CREATED (in sostanza in caso la fase del checkout non è stata completate consente di
+     * riportare il carrello allo stato precedente e riportarlo allo stato precedente)
+     */
+    public function rollback()
+    {
+        if ($this->status == Cart::CART_PAYING && $this->id != null) {
+            $response = ClientHttp::patch($this->resource . '/' . $this->id . '/rollback-checkout');
+
+            if ($response->getStatusCode() == 200 || $response->getStatusCode() == 201) {
+                $json = json_decode($response->getBody()->getContents(), true);
+                if (isset($json['data']))
+                    $this->setInfo($json['data']);
+                return $json;
+            } else {
+                return false;
+            }
+        } else
+            return false;
+
     }
 
 }

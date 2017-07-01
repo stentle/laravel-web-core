@@ -16,9 +16,39 @@ use Illuminate\Support\Facades\Session;
 class Carts
 {
 
+    /**
+     * The URIs that should be excluded from rollback cart
+     *
+     * @var array
+     */
+    protected $exceptRollback = ['carts/*'];
+
     public function __construct()
     {
     }
+
+
+    /**
+     * Determine if the request has a URI that should pass through CSRF verification.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function inExceptArray($request)
+    {
+        foreach ($this->exceptRollback as $except) {
+            if ($except !== '/') {
+                $except = trim($except, '/');
+            }
+
+            if ($request->is($except)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * Handle an incoming request.
@@ -36,11 +66,17 @@ class Carts
             $cart = new Cart();
             $cart = $cart->find($cart_session['id']);
             if ($cart != false) {
-                //check status cart and delete from session if cart active is purchased
-                if ((strtoupper($cart->getInfo()['status']) != 'CART_CREATED')) {
-                    Cart::deleteCartFromSession($cart->id);
-                } else {
+                $status =strtoupper($cart->getInfo()['status']);
+                if($status==Cart::CART_PAYING && env('X_DOMAIN')!='pricebox'){
+                    if(!$this->inExceptArray($request)){
+                        $cart->rollback();
+                    }
                     Cart::storeCartInSession($cart);
+                }else if ($status == Cart::CART_CREATED){
+                    Cart::storeCartInSession($cart);
+                } else {
+                    //check status cart and delete from session if cart active is purchased
+                    Cart::deleteCartFromSession($cart->id);
                 }
             }
         }
