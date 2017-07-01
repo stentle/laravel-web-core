@@ -7,7 +7,7 @@ interface DAOInterface
 {
     public function all();
 
-    public function paginate($perPage = 15);
+    public function paginate($page = 1,$limit=15);
 
     public function save($force);
 

@@ -48,6 +48,21 @@ class RestModel extends Entity implements DAOInterface
     /**
      * @var string E' possibile definire un rootproperty diversa per la find.
      */
+
+    /**
+     * @var string utile per l'impaginazione. Rappresenta il campo da dove recuperare il totale degli itemsE' possibile impostare anche un percorso annidato
+     */
+    protected $totalItemsProperty = 'totalItems';
+    /**
+     * @var string utile per l'impaginazione. Rappresenta il campo da dove recuperare lo startIndex.E' possibile impostare anche un percorso annidato
+     */
+    protected $startIndexProperty = 'startIndex';
+    /**
+     * @var string utile per l'impaginazione. Rappresenta il campo da dove recuperare itemsPerPage. E' possibile impostare anche un percorso annidato
+     */
+    protected $itemsPerPageProperty = 'itemsPerPage';
+
+
     protected $rootPropertyForMethodFind = 'data';
 
     public function __construct($mockup = null)
@@ -70,13 +85,13 @@ class RestModel extends Entity implements DAOInterface
 
     public function all()
     {
+
         $instance = new static;
         $proxy = $instance->proxy;
 
-        $instance->rootProperty=$this->rootProperty; //hack
+
+        $instance->rootProperty = $this->rootProperty; //hack
         if ($proxy instanceof RestProxy) {
-
-
             $proxy->resource = $this->getUrl(); //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
             try {
                 if ($this->mockup == null) {
@@ -106,9 +121,46 @@ class RestModel extends Entity implements DAOInterface
         }
     }
 
-    public function paginate($perPage = 15)
+    public function paginate($page = 1, $limit = 15)
     {
-        // TODO: Implement paginate() method.
+        $instance = new static;
+        $proxy = $instance->proxy;
+        if ($proxy instanceof RestProxy) {
+            $proxy->resource = $this->getUrl();
+            try {
+                $proxy->resource .= '?pageNumber=' . $page . '&limit=' . $limit . '&currents=true';
+                $response = $proxy->read();
+                $json = json_decode($response->getBody()->getContents(), true);
+                $data = $this->getValueFromJsonArray($instance->rootProperty, $json);
+                if ($data == null)
+                    return array();
+
+                $output = [];
+                $output['totalItems'] = $this->getValueFromJsonArray($this->totalItemsProperty,$json);
+                $output['startIndex'] = $this->getValueFromJsonArray($this->startIndexProperty,$json);
+                $output['itemsPerPage'] = $this->getValueFromJsonArray($this->itemsPerPageProperty,$json);
+
+                $items = array();
+                foreach ($data as $item) {
+                    $instance = new static;
+                    $instance->setInfo($item, $isGuard = false);
+                    $instance->baseUrl = $this->baseUrl;
+                    $instance->resource = $this->resource;
+                    $items[] = $instance;
+                }
+
+                $output['items'] = $items;
+                return $output;
+            } catch (BadResponseException $e) {
+                //TODO: gestire eccezioni 500/404/401;
+                var_dump($e->getRequest());
+                var_dump($e->getResponse());
+                throw new \Exception();
+                return false;
+            }
+        }
+
+
     }
 
     /**
@@ -231,9 +283,9 @@ class RestModel extends Entity implements DAOInterface
         $model = new $class;
 
         if ($model instanceof RestModel) {
+
             if (empty($this->id))
                 throw new \Exception("ID empty");
-
             $model->mockup = $this->mockup;
             $model->resource = $this->resource . '/' . $this->id . '/' . $model->resource;
             return $model->all();

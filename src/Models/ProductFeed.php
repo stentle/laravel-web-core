@@ -291,10 +291,6 @@ class ProductFeed extends Product
     }
 
 
-    public function all()
-    {
-        return $this->search();
-    }
 
     public function productsCorrelation($page = 1, $limit = 9)
     {
