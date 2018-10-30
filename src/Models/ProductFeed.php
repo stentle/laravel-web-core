@@ -346,8 +346,6 @@ class ProductFeed extends Product
             $products[] = $p;
         }
 
-        //dd($products);
-
         $json['data']['result']['items'] = $products;
         return $json;
     }
