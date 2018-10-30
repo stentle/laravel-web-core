@@ -34,6 +34,8 @@ class ProductFeed extends Product
     public $sellingPrice;
     public $currency;
     public $coverPhotoUrl;
+    public $microProductCategory;
+    public $macroProductCategory;
 
 
     public function getSize()
@@ -335,6 +337,7 @@ class ProductFeed extends Product
 
         $products = [];
         $items = $json['data']['result']['items'];
+        
 
         foreach ($json['data']['result']['items'] as $item) {
 
