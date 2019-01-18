@@ -36,6 +36,8 @@ class ProductFeed extends Product
     public $coverPhotoUrl;
     public $microProductCategory;
     public $macroProductCategory;
+    public $strikedSellingPrice;
+    public $salesDiscount;
 
 
     public function getSize()
