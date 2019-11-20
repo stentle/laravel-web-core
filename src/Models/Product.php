@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: giuseppetoto
@@ -7,6 +8,7 @@
  */
 
 namespace Stentle\LaravelWebcore\Models;
+
 use Stentle\LaravelWebcore\Http\RestModel;
 
 
@@ -44,8 +46,11 @@ class Product extends RestModel
     public $photoAttributes;
     public $declareVariants;
     public $attributeGroups;
+    public $price;
+    public $coverImgUrl;
 
-    public function variants($mockup=null){
-        return $this->hasMany('ProductVariants',$mockup);
+    public function variants($mockup = null)
+    {
+        return $this->hasMany('ProductVariants', $mockup);
     }
 }

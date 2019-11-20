@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: giuseppetoto
@@ -15,6 +16,7 @@ class CollectionProduct extends \Stentle\LaravelWebcore\Models\ProductFeed
     public $resource = 'products?projection=productFeedElement';
     public $coverPhotoUrl;
     public $sellingPrice;
-    public $retailPrice ;
+    public $retailPrice;
     public $currency;
+    public $price;
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: giuseppetoto
@@ -17,8 +18,8 @@ use Stentle\LaravelWebcore\Http\RestModel;
 class Order extends RestModel
 {
     protected $resource = 'purchase-orders';
-    protected  $rootProperty='data.items';
-    protected  $rootPropertyForMethodFind='data';
+    protected  $rootProperty = 'data.items';
+    protected  $rootPropertyForMethodFind = 'data';
     public $productOrderList;
     public $orderTitle;
     public $status;
@@ -30,4 +31,5 @@ class Order extends RestModel
     public $customerBillingAddress;
     public $shippingService;
     public $currency;
+    public $travel;
 }

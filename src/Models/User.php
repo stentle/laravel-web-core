@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: giuseppetoto
@@ -19,15 +20,15 @@ use Stentle\LaravelWebcore\Http\RestModel;
 class User extends RestModel
 {
 
-    protected $resource='customers';
+    protected $resource = 'customers';
 
-    protected $fillable  = array('givenName','gender','company','profession','primaryEmail','password','familyName','country','nickname','taxid','birthDate','telephone');
+    protected $fillable  = array('givenName', 'gender', 'company', 'profession', 'primaryEmail', 'password', 'familyName', 'country', 'nickname', 'taxId', 'birthDate', 'telephone');
 
     public $givenName;
     public $familyName;
     public $birthDate;
 
-    public $taxid;
+    public $taxId;
     public $telephone;
     public $primaryEmail;
     public $password;
@@ -53,17 +54,20 @@ class User extends RestModel
 
 
 
-    public function orders(){
+    public function orders()
+    {
         return $this->hasMany('Order');
     }
 
 
 
-    public function AddShippingAddress(ShippingAddress $model){
-        $model->resource = $this->resource.'/'.$this->id.'/'.$model->resource;
+    public function AddShippingAddress(ShippingAddress $model)
+    {
+        $model->resource = $this->resource . '/' . $this->id . '/' . $model->resource;
         $model->save();
     }
-    public function shippingAddresses(){
+    public function shippingAddresses()
+    {
         return $this->hasMany('ShippingAddress');
     }
 
@@ -72,26 +76,31 @@ class User extends RestModel
      * @return ShippingAddress
      * @throws \Exception
      */
-    public function findShippingAddress($id){
-        return $this->findSubresource('ShippingAddress',$id);
+    public function findShippingAddress($id)
+    {
+        return $this->findSubresource('ShippingAddress', $id);
     }
     /***
      * @param $id
      * @return BillingAddress
      * @throws \Exception
      */
-    public function findBillingAddress($id){
-        return $this->findSubresource('BillingAddress',$id);
+    public function findBillingAddress($id)
+    {
+        return $this->findSubresource('BillingAddress', $id);
     }
 
-    public function deleteShippingAddress($id){
-        return $this->deleteSubresource('ShippingAddress',$id);
+    public function deleteShippingAddress($id)
+    {
+        return $this->deleteSubresource('ShippingAddress', $id);
     }
 
-    public function deleteBillingAddress($id){
-        return $this->deleteSubresource('BillingAddress',$id);
+    public function deleteBillingAddress($id)
+    {
+        return $this->deleteSubresource('BillingAddress', $id);
     }
-    public function billingAddresses(){
+    public function billingAddresses()
+    {
         return $this->hasMany('BillingAddress');
     }
 
@@ -99,19 +108,17 @@ class User extends RestModel
      * la variabilità country è in realtà una sotto risorsa. Pertanto va trattata
      * @param $name
      */
-    public function setCountry($name){
-        if(is_string($name)){
-            $this->country=array('name'=>$name);
-        }else{
-            $this->country=$name;
+    public function setCountry($name)
+    {
+        if (is_string($name)) {
+            $this->country = array('name' => $name);
+        } else {
+            $this->country = $name;
         }
     }
 
-    public function getCountry(){
+    public function getCountry()
+    {
         return $this->country;
     }
-
-
-
-
 }
