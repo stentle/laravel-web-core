@@ -46,11 +46,11 @@ class StentleWebCoreProvider extends ServiceProvider
         Blade::directive('showError', function ($field) {
             $field = substr($field, 1, -1);
             return '<?php if($errors->has(\'' . $field . '\')) echo "<span class=\'error\'>".$errors->first(\'' . $field . '\')."</span>"?>';
-
         });
 
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/core.php', 'stentle'
+            __DIR__ . '/../config/core.php',
+            'stentle'
         );
 
         $this->app->singleton('clienthttp', function () {
@@ -68,7 +68,6 @@ class StentleWebCoreProvider extends ServiceProvider
                     $tmp = explode('=', $tmp[0]);
                     setcookie("token", $tmp[1], time() + env('SESSION_DURATION') * 60, '/');
                     $_COOKIE['token'] = $tmp[1];
-
                 }
                 $content = $response->getBody()->getContents();
                 $response->getBody()->seek(0);
@@ -111,7 +110,6 @@ class StentleWebCoreProvider extends ServiceProvider
                     $this->last_request = $request;
                     return $request;
                 }
-
             }));
 
             $headers = Config::get('stentle.headers');
@@ -132,15 +130,12 @@ class StentleWebCoreProvider extends ServiceProvider
 
 
             $headers['Accept-Language'] = $locale;
+            // $headers['Accept'] = 'application/stentle.api-v0.2+json';
 
             return new Client(['handler' => $stack, 'http_errors' => true, 'base_uri' => Config::get('stentle.api'), 'headers' => $headers, 'cookies' => true]);
-
         });
-
-
     }
 
     public function map(Router $router)
-    {
-    }
+    { }
 }

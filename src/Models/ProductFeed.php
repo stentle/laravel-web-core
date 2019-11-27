@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: giuseppetoto
@@ -33,11 +34,13 @@ class ProductFeed extends Product
     public $retailPrice;
     public $sellingPrice;
     public $currency;
+    public $price;
     public $coverPhotoUrl;
     public $microProductCategory;
     public $macroProductCategory;
     public $strikedSellingPrice;
     public $salesDiscount;
+    public $type;
 
 
     public function getSize()
@@ -127,7 +130,6 @@ class ProductFeed extends Product
         }
 
         return $pricesComparison;
-
     }
 
 
@@ -185,10 +187,8 @@ class ProductFeed extends Product
                             return 0;
                         return ($asize > $bsize) ? 1 : -1;
                     }
-
                 });
                 $obj['values'][] = $item;
-
             }
 
             return $obj;
@@ -214,7 +214,6 @@ class ProductFeed extends Product
             }
         } else
             return false;
-
     }
 
     /**
@@ -254,8 +253,8 @@ class ProductFeed extends Product
                             'key' => $keyChildren,
                             'pricesComparison' => $variant['pricesComparison'],
                             'value' => $variant['attributeLocales'][$keyChildren]['value'],
-                            'name' => $variant['attributeLocales'][$keyChildren]['locale']];
-
+                            'name' => $variant['attributeLocales'][$keyChildren]['locale']
+                        ];
                     }
                     //riordino per valore attributo
                     usort($children, function ($item1, $item2) {
@@ -280,14 +279,12 @@ class ProductFeed extends Product
                             if ($item1['value'] == $item2['value']) return 0;
                             return $item1['value'] < $item2['value'] ? -1 : 1;
                         }
-
                     });
 
 
                     return $children;
                 }
             }
-
         }
 
 
@@ -339,7 +336,7 @@ class ProductFeed extends Product
 
         $products = [];
         $items = $json['data']['result']['items'];
-        
+
 
         foreach ($json['data']['result']['items'] as $item) {
 
@@ -363,12 +360,13 @@ class ProductFeed extends Product
      */
     public static function createFilter($basic, $advanced, $range, $pageNumber, $limit)
     {
-        return ['filterAttributes' => [
-            'basic' => $basic,
-            'advanced' => $advanced,
-            'range' => $range,
-        ], 'pageNumber' => $pageNumber,
-            'limit' => $limit];
+        return [
+            'filterAttributes' => [
+                'basic' => $basic,
+                'advanced' => $advanced,
+                'range' => $range,
+            ], 'pageNumber' => $pageNumber,
+            'limit' => $limit
+        ];
     }
-
 }
