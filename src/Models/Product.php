@@ -20,6 +20,7 @@ class Product extends RestModel
 {
 
     public $resource = 'products';
+    public $headers = ['Accept' => 'application/stentle.api-v0.1+json'];
 
     public $name;
     public $description;
@@ -46,8 +47,10 @@ class Product extends RestModel
     public $photoAttributes;
     public $declareVariants;
     public $attributeGroups;
+    // Utravel Addition
     public $price;
     public $coverImgUrl;
+    public $attributeList;
 
     public function variants($mockup = null)
     {
