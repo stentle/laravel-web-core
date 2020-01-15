@@ -255,11 +255,14 @@ class Authentication implements AuthenticationContract
         $this->session->forget('user');
         $this->session->forget('carts');
         $this->session->forget('cookie');
+        $this->session->forget('cookie_ss');
         setcookie("token", -1, time() - env('SESSION_DURATION') * 60, '/');
+        setcookie("token_ss", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("email", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("password", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("cart_id", -1, time() - env('SESSION_DURATION') * 60, '/');
         unset($_COOKIE['token']);
+        unset($_COOKIE['token_ss']);
         unset($_COOKIE['email']);
         unset($_COOKIE['password']);
         unset($_COOKIE['cart_id']);

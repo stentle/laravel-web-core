@@ -60,14 +60,33 @@ class StentleWebCoreProvider extends ServiceProvider
             $stack = new HandlerStack();
             $stack->setHandler(new CurlHandler());
             $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
-                if ($response->hasHeader('Set-Cookie')) {
-                    Session::put('cookie', $response->getHeader('Set-Cookie')[0]);
 
-                    //retrieve the token from header set-cookie and store in cookie
-                    $tmp = explode(';', $response->getHeader('Set-Cookie')[0]);
-                    $tmp = explode('=', $tmp[0]);
-                    setcookie("token", $tmp[1], time() + env('SESSION_DURATION') * 60, '/');
-                    $_COOKIE['token'] = $tmp[1];
+                if ($response->hasHeader('Set-Cookie')) {
+
+                    $cookies = $response->getHeader('Set-Cookie');
+                    $counter = 0;
+
+                    foreach ($cookies as $cookie){
+                        $tmp=explode(';', $cookie);
+                        $tmp=explode('=',$tmp[0]);
+
+                        switch($tmp[0]){
+                            case 'stentle':
+                                Session::put('cookie', $response->getHeader('Set-Cookie')[$counter]);
+                                setcookie("token",$tmp[1], time() + env('SESSION_DURATION') * 60, '/');
+                                $_COOKIE['token']=$tmp[1];
+                                break;
+                            case 'stentle-ss':
+                                if(!Session::has('cookie_ss')) {
+                                    Session::put('cookie_ss', $response->getHeader('Set-Cookie')[$counter]);
+                                    setcookie("token_ss", $tmp[1], 0, '/');
+                                    $_COOKIE['token_ss'] = $tmp[1];
+                                }
+                                break;
+                        }
+                        $counter+=1;
+                    }
+
                 }
                 $content = $response->getBody()->getContents();
                 $response->getBody()->seek(0);
@@ -103,8 +122,16 @@ class StentleWebCoreProvider extends ServiceProvider
 
             //setto i cookie su ogni richiesta fatta alle chiamate delle api di stentle
             $stack->push(Middleware::mapRequest(function (RequestInterface $request) {
-                if (Session::has('cookie')) { //aggiunto alla richieste anche il cookie di autentificazione in caso è presente
-                    $this->last_request = $request->withHeader('cookie', Session::get('cookie'));
+                if(Session::has('cookie')) { //aggiunto alla richieste anche il cookie di autentificazione in caso è presente
+                    $header = Session::get('cookie');
+                    $request = $request->withHeader('cookie', $header);
+
+                    if (Session::has('cookie_ss')){
+                        $header = Session::get('cookie_ss');
+                        $request = $request->withAddedHeader('cookie', $header);
+                    }
+
+                    $this->last_request = $request;
                     return $this->last_request;
                 } else {
                     $this->last_request = $request;
