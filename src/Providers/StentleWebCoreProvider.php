@@ -65,7 +65,7 @@ class StentleWebCoreProvider extends ServiceProvider
 
                     $cookies = $response->getHeader('Set-Cookie');
                     $counter = 0;
-
+                  
                     foreach ($cookies as $cookie) {
                         $tmp = explode(';', $cookie);
                         $tmp = explode('=', $tmp[0]);
