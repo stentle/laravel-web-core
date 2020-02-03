@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: giuseppetoto
@@ -71,7 +72,6 @@ class Authentication implements AuthenticationContract
 
         try {
             $response = ClientHttp::post('login?username=' . $username . '&password=' . $password . '&remember-me=true');
-
         } catch (BadResponseException $e) {
 
             //TODO: gestire eccezione
@@ -90,7 +90,6 @@ class Authentication implements AuthenticationContract
         } else {
             return false;
         }
-
     }
 
 
@@ -145,7 +144,7 @@ class Authentication implements AuthenticationContract
                 } else {
                     try {
                         $user = Socialite::driver('facebook')->user();
-                    } Catch (ClientException $e) {
+                    } catch (ClientException $e) {
                         //TODO: gestire eccezione (token scaduto o altro)
                         return false;
                     }
@@ -162,8 +161,6 @@ class Authentication implements AuthenticationContract
             $response = ClientHttp::post('login/social', [
                 'json' => $data
             ]);
-
-
         } catch (BadResponseException $e) {
             return false;
         }
@@ -258,11 +255,15 @@ class Authentication implements AuthenticationContract
         $this->session->forget('cookie_ss');
         setcookie("token", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("token_ss", -1, time() - env('SESSION_DURATION') * 60, '/');
+        setcookie("stentle", -1, time() - env('SESSION_DURATION') * 60, '/');
+        setcookie("stentle_ss", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("email", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("password", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("cart_id", -1, time() - env('SESSION_DURATION') * 60, '/');
         unset($_COOKIE['token']);
         unset($_COOKIE['token_ss']);
+        unset($_COOKIE['stentle']);
+        unset($_COOKIE['stentle_ss']);
         unset($_COOKIE['email']);
         unset($_COOKIE['password']);
         unset($_COOKIE['cart_id']);
