@@ -60,6 +60,25 @@ class StentleWebCoreProvider extends ServiceProvider
             $stack = new HandlerStack();
             $stack->setHandler(new CurlHandler());
             $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
+            $domain = ".master.stentle.com";
+            
+            switch (env('STENTLE_API', "")) {
+                case 'local':
+                    $domain = ".local.stentle.com";
+                break;
+
+                case 'develop':
+                    $domain = ".develop.stentle.com";
+                break;
+
+                case 'release':
+                    $domain = ".release.stentle.com";
+                break;
+
+                case 'production':
+                    $domain = ".master.stentle.com";
+                break;
+            }
 
                 if ($response->hasHeader('Set-Cookie')) {
 
@@ -75,7 +94,7 @@ class StentleWebCoreProvider extends ServiceProvider
                                 Session::put('cookie', $response->getHeader('Set-Cookie')[$counter]);
                                 setcookie("token", $tmp[1], time() + env('SESSION_DURATION') * 60, '/');
                                 $_COOKIE['token'] = $tmp[1];
-                                setcookie("stentle", $tmp[1], time() + env('SESSION_DURATION') * 60, '/');
+                                setcookie("stentle", $tmp[1], time() + env('SESSION_DURATION') * 60, '/', $domain);
                                 $_COOKIE['stentle'] = $tmp[1];
                                 break;
                             case 'stentle-ss':
@@ -83,7 +102,7 @@ class StentleWebCoreProvider extends ServiceProvider
                                     Session::put('cookie_ss', $response->getHeader('Set-Cookie')[$counter]);
                                     setcookie("token_ss", $tmp[1], 0, '/');
                                     $_COOKIE['token_ss'] = $tmp[1];
-                                    setcookie("stentle_ss", $tmp[1], 0, '/');
+                                    setcookie("stentle_ss", $tmp[1], 0, '/', $domain);
                                     $_COOKIE['stentle_ss'] = $tmp[1];
                                 }
                                 break;

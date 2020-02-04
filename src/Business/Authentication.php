@@ -253,10 +253,31 @@ class Authentication implements AuthenticationContract
         $this->session->forget('carts');
         $this->session->forget('cookie');
         $this->session->forget('cookie_ss');
+
+        $domain = ".master.stentle.com";
+            
+        switch (env('STENTLE_API', "")) {
+            case 'local':
+                $domain = ".local.stentle.com";
+            break;
+
+            case 'develop':
+                $domain = ".develop.stentle.com";
+            break;
+
+            case 'release':
+                $domain = ".release.stentle.com";
+            break;
+
+            case 'production':
+                $domain = ".master.stentle.com";
+            break;
+        }
+
         setcookie("token", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("token_ss", -1, time() - env('SESSION_DURATION') * 60, '/');
-        setcookie("stentle", -1, time() - env('SESSION_DURATION') * 60, '/');
-        setcookie("stentle_ss", -1, time() - env('SESSION_DURATION') * 60, '/');
+        setcookie("stentle", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
+        setcookie("stentle_ss", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
         setcookie("email", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("password", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("cart_id", -1, time() - env('SESSION_DURATION') * 60, '/');
