@@ -60,25 +60,7 @@ class StentleWebCoreProvider extends ServiceProvider
             $stack = new HandlerStack();
             $stack->setHandler(new CurlHandler());
             $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
-            $domain = ".master.stentle.com";
-            
-            switch (env('STENTLE_API', "")) {
-                case 'local':
-                    $domain = ".local.stentle.com";
-                break;
-
-                case 'develop':
-                    $domain = ".develop.stentle.com";
-                break;
-
-                case 'release':
-                    $domain = ".release.stentle.com";
-                break;
-
-                case 'production':
-                    $domain = ".master.stentle.com";
-                break;
-            }
+            $domain = env('STENTLE_COOKIE_DOMAIN', "");
 
                 if ($response->hasHeader('Set-Cookie')) {
 
