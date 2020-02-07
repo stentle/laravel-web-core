@@ -135,7 +135,6 @@ class Authentication implements AuthenticationContract
      */
     public function loginThirdParty($request, $provider, $token = null)
     {
-
         $data = [];
         switch ($provider) {
             case 'facebook':
@@ -155,11 +154,28 @@ class Authentication implements AuthenticationContract
                     $data['email'] = $request->input('email');
                 }
                 break;
+            case 'google':
+                if ($token != null) {
+                    $data['token'] = $token;
+                } else {
+                    try {
+                        $user = Socialite::driver('google')->user();
+                    } catch (ClientException $e) {
+                        //TODO: gestire eccezione (token scaduto o altro)
+                        return false;
+                    }
+                    $data['token'] = $user->token;
+                }
+                $data['authorityName'] = 'google';
+                if ($request->input('email') !== null) {
+                    $data['email'] = $request->input('email');
+                }
+                break;
         }
-
         try {
             $response = ClientHttp::post('login/social', [
-                'json' => $data
+                'json' => $data,
+                'headers' => ['Accept' => 'application/stentle.api-v0.1+json']
             ]);
         } catch (BadResponseException $e) {
             return false;

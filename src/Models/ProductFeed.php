@@ -296,9 +296,33 @@ class ProductFeed extends Product
     public function productsCorrelation($page = 1, $limit = 9)
     {
         if ($this->id != null) {
-            $this->resource = 'catalog/product/' . $this->id . '/related?pageNumber=' . $page . '&limit=' . $limit;
-            $this->rootProperty = 'result.items';
-            return parent::all();
+            $options['headers']['Accept'] = 'application/json';
+
+            $response = ClientHttp::get('catalog/product/' . $this->id . '/related?pageNumber=' . $page . '&limit=' . $limit, $options);
+
+            if ($response->getStatusCode() >= 400)
+                throw new \Exception("catalog search request failed with code: " . $response->getStatusCode());
+            else
+                $json = json_decode($response->getBody()->getContents(), true);
+
+            $products = [];
+            $items = $json['result']['items'];
+
+
+            foreach ($json['result']['items'] as $item) {
+
+                $p = (new ProductFeed());
+                $p->setInfo($item);
+                $products[] = $p;
+            }
+
+            $json['result']['items'] = $products;
+            return $json['result']['items'];
+
+
+            // $this->resource = 'catalog/product/' . $this->id . '/related?pageNumber=' . $page . '&limit=' . $limit;
+            // $this->rootProperty = 'result.items';
+            // return parent::all();
         } else {
             throw  new \Exception("id product not defined");
         }
