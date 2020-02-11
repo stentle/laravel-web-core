@@ -20,6 +20,7 @@ class Order extends RestModel
     protected $resource = 'purchase-orders';
     protected  $rootProperty = 'data.items';
     protected  $rootPropertyForMethodFind = 'data';
+    public $headers = ['Accept-Language' => ''];
     public $productOrderList;
     public $orderTitle;
     public $status;
