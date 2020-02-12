@@ -309,15 +309,20 @@ class ProductFeed extends Product
             $items = $json['result']['items'];
 
 
-            foreach ($json['result']['items'] as $item) {
+            if (!empty($json['result']['items'])) {
+                foreach ($json['result']['items'] as $item) {
 
-                $p = (new ProductFeed());
-                $p->setInfo($item);
-                $products[] = $p;
+                    $p = (new ProductFeed());
+                    $p->setInfo($item);
+                    $products[] = $p;
+                }
+
+                $json['result']['items'] = $products;
+                return $json['result']['items'];
+            } else {
+                return [];
             }
 
-            $json['result']['items'] = $products;
-            return $json['result']['items'];
 
 
             // $this->resource = 'catalog/product/' . $this->id . '/related?pageNumber=' . $page . '&limit=' . $limit;
