@@ -34,4 +34,5 @@ class Order extends RestModel
     public $currency;
     public $travel;
     public $attributeList;
+    public $travellers;
 }
