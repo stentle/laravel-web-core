@@ -41,6 +41,7 @@ class ProductFeed extends Product
     public $strikedSellingPrice;
     public $salesDiscount;
     public $type;
+    public $parentId;
 
 
     public function getSize()
