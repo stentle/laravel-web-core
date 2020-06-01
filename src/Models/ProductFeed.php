@@ -354,7 +354,7 @@ class ProductFeed extends Product
         if (empty($filter)) {
             $filter = self::createFilter([], [], [], 1, 100);
         }
-        $options['headers']['Accept'] = 'application/stentle.api-v0.2+json';
+        $options['headers']['Accept'] = 'application/stentle.api-v0.3+json';
         $options['json'] = $filter; //filters
 
         $response = ClientHttp::post('catalog', $options);
