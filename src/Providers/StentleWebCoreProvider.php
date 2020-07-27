@@ -82,23 +82,11 @@ class StentleWebCoreProvider extends ServiceProvider
                                 $isStentleCookiePresent = true;
                                 $stentleCookie = $response->getHeader('Set-Cookie')[$counter]; 
                                 $stentleTmp1 = $tmp[1];
-                                //Session::put('cookie', $response->getHeader('Set-Cookie')[$counter]);
-                                //setcookie("token", $tmp[1], time() + env('SESSION_DURATION') * 60, '/');
-                                //$_COOKIE['token'] = $tmp[1];
-                                //setcookie("stentle", $tmp[1], time() + env('SESSION_DURATION') * 60, '/', $domain);
-                                //$_COOKIE['stentle'] = $tmp[1];
                                 break;
                             case 'stentle-ss':
                                 $isStentleSSCookiePresent = true;
                                 $stentleSSCookie = $response->getHeader('Set-Cookie')[$counter]; 
                                 $stentleSSTmp1 = $tmp[1];
-                                //if (!Session::has('cookie_ss')) {
-                                    //Session::put('cookie_ss', $response->getHeader('Set-Cookie')[$counter]);
-                                    //setcookie("token_ss", $tmp[1], 0, '/');
-                                    //$_COOKIE['token_ss'] = $tmp[1];
-                                    //setcookie("stentle_ss", $tmp[1], 0, '/', $domain);
-                                    //$_COOKIE['stentle_ss'] = $tmp[1];
-                                //}
                                 break;
                         }
 
@@ -106,7 +94,7 @@ class StentleWebCoreProvider extends ServiceProvider
                     }
                     
                     if ($isStentleCookiePresent) {
-                        // set stentle cookie + stentle_ss cookie if in the same request
+                        // set stentle cookie + stentle-ss cookie if in the same request
                         Session::put('cookie', $stentleCookie);
                         setcookie("token", $stentleTmp1, time() + env('SESSION_DURATION') * 60, '/');
                         $_COOKIE['token'] = $stentleTmp1;
@@ -117,8 +105,8 @@ class StentleWebCoreProvider extends ServiceProvider
                             Session::put('cookie_ss', $stentleSSCookie);
                             setcookie("token_ss", $stentleSSTmp1, 0, '/');
                             $_COOKIE['token_ss'] = $stentleSSTmp1;
-                            setcookie("stentle_ss", $stentleSSTmp1, 0, '/', $domain);
-                            $_COOKIE['stentle_ss'] = $stentleSSTmp1;
+                            setcookie("stentle-ss", $stentleSSTmp1, 0, '/', $domain);
+                            $_COOKIE['stentle-ss'] = $stentleSSTmp1;
                         }
                     }
                     else if ($isStentleSSCookiePresent && !Session::has('cookie_ss')) {
@@ -126,8 +114,8 @@ class StentleWebCoreProvider extends ServiceProvider
                         Session::put('cookie_ss', $stentleSSCookie);
                         setcookie("token_ss", $stentleSSTmp1, 0, '/');
                         $_COOKIE['token_ss'] = $stentleSSTmp1;
-                        setcookie("stentle_ss", $stentleSSTmp1, 0, '/', $domain);
-                        $_COOKIE['stentle_ss'] = $stentleSSTmp1;;
+                        setcookie("stentle-ss", $stentleSSTmp1, 0, '/', $domain);
+                        $_COOKIE['stentle-ss'] = $stentleSSTmp1;;
                     }
                 }
 

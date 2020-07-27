@@ -275,14 +275,14 @@ class Authentication implements AuthenticationContract
         setcookie("token", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("token_ss", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("stentle", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
-        setcookie("stentle_ss", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
+        setcookie("stentle-ss", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
         setcookie("email", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("password", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("cart_id", -1, time() - env('SESSION_DURATION') * 60, '/');
         unset($_COOKIE['token']); 
         unset($_COOKIE['token_ss']);
         unset($_COOKIE['stentle']);
-        unset($_COOKIE['stentle_ss']);
+        unset($_COOKIE['stentle-ss']);
         unset($_COOKIE['email']);
         unset($_COOKIE['password']);
         unset($_COOKIE['cart_id']);
