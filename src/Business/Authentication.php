@@ -135,7 +135,7 @@ class Authentication implements AuthenticationContract
      */
     public function loginThirdParty($request, $provider, $token = null)
     {
-        $data = [];
+         $data = [];
         switch ($provider) {
             case 'facebook':
                 if ($token != null) {
@@ -182,11 +182,10 @@ class Authentication implements AuthenticationContract
         }
 
         if ($response instanceof Response) {
-            if ($response->getStatusCode() == 400) {
-                return $response;
-            } else {
+            if ($response->getStatusCode() == 200) {
                 return $this->createAccess($response);
             }
+            return $response;
         }
     }
 
