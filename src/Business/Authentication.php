@@ -182,11 +182,10 @@ class Authentication implements AuthenticationContract
         }
 
         if ($response instanceof Response) {
-            if ($response->getStatusCode() == 400) {
-                return $response;
-            } else {
+            if ($response->getStatusCode() == 200) {
                 return $this->createAccess($response);
             }
+            return $response;
         }
     }
 
@@ -271,18 +270,18 @@ class Authentication implements AuthenticationContract
         $this->session->forget('cookie_ss');
 
         $domain = env('STENTLE_COOKIE_DOMAIN', "");
-            
+
         setcookie("token", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("token_ss", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("stentle", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
-        setcookie("stentle_ss", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
+        setcookie("stentle-ss", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
         setcookie("email", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("password", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("cart_id", -1, time() - env('SESSION_DURATION') * 60, '/');
-        unset($_COOKIE['token']); 
+        unset($_COOKIE['token']);
         unset($_COOKIE['token_ss']);
         unset($_COOKIE['stentle']);
-        unset($_COOKIE['stentle_ss']);
+        unset($_COOKIE['stentle-ss']);
         unset($_COOKIE['email']);
         unset($_COOKIE['password']);
         unset($_COOKIE['cart_id']);
