@@ -27,6 +27,7 @@ class ProductFeed extends Product
     public $defaultPricesComparison;
     public $sku;
     public $attributeGroups;
+    public $attributeList;
     public $photos;
     public $availableSizes;
     public $attributeVariants;
