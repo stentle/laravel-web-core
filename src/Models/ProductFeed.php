@@ -30,7 +30,6 @@ class ProductFeed extends Product
     public $attributeList;
     public $photos;
     public $availableSizes;
-    public $attributeVariants;
     public $sellingDiscount;
     public $retailPrice;
     public $sellingPrice;
