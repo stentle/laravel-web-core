@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: giuseppetoto
@@ -34,12 +35,15 @@ class ProductFeed extends Product
     public $retailPrice;
     public $sellingPrice;
     public $currency;
+    public $price;
     public $coverPhotoUrl;
     public $microProductCategory;
     public $macroProductCategory;
     public $strikedSellingPrice;
     public $salesDiscount;
     public $acquisitionPrice;
+    public $type;
+    public $parentId;
 
     public function getSize()
     {
@@ -128,7 +132,6 @@ class ProductFeed extends Product
         }
 
         return $pricesComparison;
-
     }
 
 
@@ -186,10 +189,8 @@ class ProductFeed extends Product
                             return 0;
                         return ($asize > $bsize) ? 1 : -1;
                     }
-
                 });
                 $obj['values'][] = $item;
-
             }
 
             return $obj;
@@ -215,7 +216,6 @@ class ProductFeed extends Product
             }
         } else
             return false;
-
     }
 
     /**
@@ -255,8 +255,8 @@ class ProductFeed extends Product
                             'key' => $keyChildren,
                             'pricesComparison' => $variant['pricesComparison'],
                             'value' => $variant['attributeLocales'][$keyChildren]['value'],
-                            'name' => $variant['attributeLocales'][$keyChildren]['locale']];
-
+                            'name' => $variant['attributeLocales'][$keyChildren]['locale']
+                        ];
                     }
                     //riordino per valore attributo
                     usort($children, function ($item1, $item2) {
@@ -281,14 +281,12 @@ class ProductFeed extends Product
                             if ($item1['value'] == $item2['value']) return 0;
                             return $item1['value'] < $item2['value'] ? -1 : 1;
                         }
-
                     });
 
 
                     return $children;
                 }
             }
-
         }
 
 
@@ -300,9 +298,38 @@ class ProductFeed extends Product
     public function productsCorrelation($page = 1, $limit = 9)
     {
         if ($this->id != null) {
-            $this->resource = 'catalog/product/' . $this->id . '/related?pageNumber=' . $page . '&limit=' . $limit;
-            $this->rootProperty = 'result.items';
-            return parent::all();
+            $options['headers']['Accept'] = 'application/json';
+
+            $response = ClientHttp::get('catalog/product/' . $this->id . '/related?pageNumber=' . $page . '&limit=' . $limit, $options);
+
+            if ($response->getStatusCode() >= 400)
+                throw new \Exception("catalog search request failed with code: " . $response->getStatusCode());
+            else
+                $json = json_decode($response->getBody()->getContents(), true);
+
+            $products = [];
+            $items = $json['result']['items'];
+
+
+            if (!empty($json['result']['items'])) {
+                foreach ($json['result']['items'] as $item) {
+
+                    $p = (new ProductFeed());
+                    $p->setInfo($item);
+                    $products[] = $p;
+                }
+
+                $json['result']['items'] = $products;
+                return $json['result']['items'];
+            } else {
+                return [];
+            }
+
+
+
+            // $this->resource = 'catalog/product/' . $this->id . '/related?pageNumber=' . $page . '&limit=' . $limit;
+            // $this->rootProperty = 'result.items';
+            // return parent::all();
         } else {
             throw  new \Exception("id product not defined");
         }
@@ -328,7 +355,7 @@ class ProductFeed extends Product
         if (empty($filter)) {
             $filter = self::createFilter([], [], [], 1, 100);
         }
-        $options['headers']['Accept'] = 'application/stentle.api-v0.2+json';
+        $options['headers']['Accept'] = 'application/stentle.api-v0.3+json';
         $options['json'] = $filter; //filters
 
         $response = ClientHttp::post('catalog', $options);
@@ -340,7 +367,7 @@ class ProductFeed extends Product
 
         $products = [];
         $items = $json['data']['result']['items'];
-        
+
 
         foreach ($json['data']['result']['items'] as $item) {
 
@@ -364,12 +391,13 @@ class ProductFeed extends Product
      */
     public static function createFilter($basic, $advanced, $range, $pageNumber, $limit)
     {
-        return ['filterAttributes' => [
-            'basic' => $basic,
-            'advanced' => $advanced,
-            'range' => $range,
-        ], 'pageNumber' => $pageNumber,
-            'limit' => $limit];
+        return [
+            'filterAttributes' => [
+                'basic' => $basic,
+                'advanced' => $advanced,
+                'range' => $range,
+            ], 'pageNumber' => $pageNumber,
+            'limit' => $limit
+        ];
     }
-
 }

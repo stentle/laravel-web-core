@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: giuseppetoto
@@ -71,7 +72,6 @@ class Authentication implements AuthenticationContract
 
         try {
             $response = ClientHttp::post('login?username=' . $username . '&password=' . $password . '&remember-me=true');
-
         } catch (BadResponseException $e) {
 
             //TODO: gestire eccezione
@@ -90,7 +90,6 @@ class Authentication implements AuthenticationContract
         } else {
             return false;
         }
-
     }
 
 
@@ -136,8 +135,7 @@ class Authentication implements AuthenticationContract
      */
     public function loginThirdParty($request, $provider, $token = null)
     {
-
-        $data = [];
+         $data = [];
         switch ($provider) {
             case 'facebook':
                 if ($token != null) {
@@ -145,7 +143,7 @@ class Authentication implements AuthenticationContract
                 } else {
                     try {
                         $user = Socialite::driver('facebook')->user();
-                    } Catch (ClientException $e) {
+                    } catch (ClientException $e) {
                         //TODO: gestire eccezione (token scaduto o altro)
                         return false;
                     }
@@ -156,24 +154,38 @@ class Authentication implements AuthenticationContract
                     $data['email'] = $request->input('email');
                 }
                 break;
+            case 'google':
+                if ($token != null) {
+                    $data['token'] = $token;
+                } else {
+                    try {
+                        $user = Socialite::driver('google')->user();
+                    } catch (ClientException $e) {
+                        //TODO: gestire eccezione (token scaduto o altro)
+                        return false;
+                    }
+                    $data['token'] = $user->token;
+                }
+                $data['authorityName'] = 'google';
+                if ($request->input('email') !== null) {
+                    $data['email'] = $request->input('email');
+                }
+                break;
         }
-
         try {
             $response = ClientHttp::post('login/social', [
-                'json' => $data
+                'json' => $data,
+                'headers' => ['Accept' => 'application/stentle.api-v0.1+json']
             ]);
-
-
         } catch (BadResponseException $e) {
             return false;
         }
 
         if ($response instanceof Response) {
-            if ($response->getStatusCode() == 400) {
-                return $response;
-            } else {
+            if ($response->getStatusCode() == 200) {
                 return $this->createAccess($response);
             }
+            return $response;
         }
     }
 
@@ -255,11 +267,21 @@ class Authentication implements AuthenticationContract
         $this->session->forget('user');
         $this->session->forget('carts');
         $this->session->forget('cookie');
+        $this->session->forget('cookie_ss');
+
+        $domain = env('STENTLE_COOKIE_DOMAIN', "");
+            
         setcookie("token", -1, time() - env('SESSION_DURATION') * 60, '/');
+        setcookie("token_ss", -1, time() - env('SESSION_DURATION') * 60, '/');
+        setcookie("stentle", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
+        setcookie("stentle-ss", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
         setcookie("email", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("password", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("cart_id", -1, time() - env('SESSION_DURATION') * 60, '/');
-        unset($_COOKIE['token']);
+        unset($_COOKIE['token']); 
+        unset($_COOKIE['token_ss']);
+        unset($_COOKIE['stentle']);
+        unset($_COOKIE['stentle-ss']);
         unset($_COOKIE['email']);
         unset($_COOKIE['password']);
         unset($_COOKIE['cart_id']);
