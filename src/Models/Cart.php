@@ -20,6 +20,7 @@ class Cart extends RestModel
     public $order;
     public $shippingAddress;
     public $settings;
+    public $deliveryOption;
 
     const CART_PAYMENT_AUTHORIZED = 'CART_PAYMENT_AUTHORIZED';
     const CART_PURCHASED = 'CART_PURCHASED';
