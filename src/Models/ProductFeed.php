@@ -30,7 +30,6 @@ class ProductFeed extends Product
     public $attributeList;
     public $photos;
     public $availableSizes;
-    public $attributeVariants;
     public $sellingDiscount;
     public $retailPrice;
     public $sellingPrice;
@@ -41,9 +40,9 @@ class ProductFeed extends Product
     public $macroProductCategory;
     public $strikedSellingPrice;
     public $salesDiscount;
+    public $acquisitionPrice;
     public $type;
     public $parentId;
-
 
     public function getSize()
     {

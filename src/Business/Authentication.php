@@ -273,8 +273,8 @@ class Authentication implements AuthenticationContract
             
         setcookie("token", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("token_ss", -1, time() - env('SESSION_DURATION') * 60, '/');
-        setcookie("stentle", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
-        setcookie("stentle-ss", -1, time() - env('SESSION_DURATION') * 60, '/', $domain);
+        setcookie("stentle", -1, time() - env('SESSION_DURATION') * 60, '/');
+        setcookie("stentle-ss", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("email", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("password", -1, time() - env('SESSION_DURATION') * 60, '/');
         setcookie("cart_id", -1, time() - env('SESSION_DURATION') * 60, '/');

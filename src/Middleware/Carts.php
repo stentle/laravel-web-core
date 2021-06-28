@@ -67,7 +67,7 @@ class Carts
             $cart = $cart->find($cart_session['id']);
             if ($cart != false) {
                 $status =strtoupper($cart->getInfo()['status']);
-                if($status==Cart::CART_PAYING && env('X_DOMAIN')!='pricebox'){
+                if($status == Cart::CART_PAYING && env('X_DOMAIN') != 'pricebox' && env('X_DOMAIN') != 'vhernier' && env('X_DOMAIN') != 'landoffashion'){
                     if(!$this->inExceptArray($request)){
                         $cart->rollback();
                     }

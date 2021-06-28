@@ -96,25 +96,25 @@ class StentleWebCoreProvider extends ServiceProvider
                     if ($isStentleCookiePresent) {
                         // set stentle cookie + stentle-ss cookie if in the same request
                         Session::put('cookie', $stentleCookie);
-                        setcookie("token", $stentleTmp1, time() + env('SESSION_DURATION') * 60, '/');
+                        setrawcookie("token", $stentleTmp1, time() + env('SESSION_DURATION') * 60, '/');
                         $_COOKIE['token'] = $stentleTmp1;
-                        setcookie("stentle", $stentleTmp1, time() + env('SESSION_DURATION') * 60, '/', $domain);
+                        setrawcookie("stentle", $stentleTmp1, time() + env('SESSION_DURATION') * 60, '/');
                         $_COOKIE['stentle'] = $stentleTmp1;
 
                         if ($isStentleSSCookiePresent) {
                             Session::put('cookie_ss', $stentleSSCookie);
-                            setcookie("token_ss", $stentleSSTmp1, 0, '/');
+                            setrawcookie("token_ss", $stentleSSTmp1, 0, '/');
                             $_COOKIE['token_ss'] = $stentleSSTmp1;
-                            setcookie("stentle-ss", $stentleSSTmp1, 0, '/', $domain);
+                            setrawcookie("stentle-ss", $stentleSSTmp1, 0, '/');
                             $_COOKIE['stentle-ss'] = $stentleSSTmp1;
                         }
                     }
                     else if ($isStentleSSCookiePresent && !Session::has('cookie_ss')) {
                         // not authenticating, keep existing ss cookie
                         Session::put('cookie_ss', $stentleSSCookie);
-                        setcookie("token_ss", $stentleSSTmp1, 0, '/');
+                        setrawcookie("token_ss", $stentleSSTmp1, 0, '/');
                         $_COOKIE['token_ss'] = $stentleSSTmp1;
-                        setcookie("stentle-ss", $stentleSSTmp1, 0, '/', $domain);
+                        setrawcookie("stentle-ss", $stentleSSTmp1, 0, '/');
                         $_COOKIE['stentle-ss'] = $stentleSSTmp1;;
                     }
                 }
