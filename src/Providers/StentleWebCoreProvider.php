@@ -30,15 +30,6 @@ class StentleWebCoreProvider extends ServiceProvider
     {
 
         parent::boot();
-    }
-
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
         $user = new User();
         $auth = new Authentication($user, $this->app['session.store']);
         $this->app->instance('Stentle\LaravelWebcore\Contracts\Authentication', $auth);
@@ -192,6 +183,15 @@ class StentleWebCoreProvider extends ServiceProvider
 
             return new Client(['handler' => $stack, 'http_errors' => true, 'base_uri' => Config::get('stentle.api'), 'headers' => $headers, 'cookies' => true]);
         });
+    }
+
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
     }
 
     public function map(Router $router)
