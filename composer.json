@@ -1,5 +1,5 @@
 {
-    "name": "stentle-hackers/laravel-webcore",
+    "name": "stentle/laravel-webcore",
     "description": "It provides a class sets to facilitate communication with the api of stentle. Support for laravel 5.3.*",
     "type": "laravel-library",
     "keywords": ["stentle"],
