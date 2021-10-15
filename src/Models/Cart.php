@@ -21,6 +21,7 @@ class Cart extends RestModel
     public $shippingAddress;
     public $settings;
     public $deliveryOption;
+    public $clientId;
 
     const CART_PAYMENT_AUTHORIZED = 'CART_PAYMENT_AUTHORIZED';
     const CART_PURCHASED = 'CART_PURCHASED';
@@ -249,6 +250,16 @@ class Cart extends RestModel
         } else
             return false;
 
+    }
+
+    /**
+     * Aggiunge l'header X-Client-Id se il cart ne è dotato.
+     */
+    public function addCartClientIdHeader() {
+        if ($this->clientId != null) {
+            $this->headers = ['X-Cart-Client-Id' => $this->clientId];
+            $this->proxy->headers = $this->headers;
+        }
     }
 
 }
