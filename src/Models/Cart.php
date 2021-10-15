@@ -257,7 +257,7 @@ class Cart extends RestModel
      */
     public function addCartClientIdHeader() {
         if ($this->clientId != null) {
-            $this->headers = ['X-Cart-Client-Id' => $this->clientId]
+            $this->headers = ['X-Cart-Client-Id' => $this->clientId];
             $this->proxy->headers = $this->headers;
         }
     }
