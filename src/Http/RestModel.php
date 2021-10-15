@@ -93,6 +93,8 @@ class RestModel extends Entity implements DAOInterface
         $instance->rootProperty = $this->rootProperty; //hack
         if ($proxy instanceof RestProxy) {
             $proxy->resource = $this->getUrl(); //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+            $proxy->headers = $this->headers;
+
             try {
                 if ($this->mockup == null) {
                     $response = $proxy->read();
@@ -127,6 +129,8 @@ class RestModel extends Entity implements DAOInterface
         $proxy = $instance->proxy;
         if ($proxy instanceof RestProxy) {
             $proxy->resource = $this->getUrl();
+            $proxy->headers = $this->headers;
+
             try {
                 $proxy->resource .= '?pageNumber=' . $page . '&limit=' . $limit . '&currents=true';
                 $response = $proxy->read();
@@ -172,6 +176,8 @@ class RestModel extends Entity implements DAOInterface
         $idProp = $this->idProperty;
         try {
             $this->proxy->resource = $this->getUrl();  //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+            $this->proxy->headers = $this->headers;
+
 
             if (empty($this->$idProp) || $force) {
                 $r = $this->proxy->create($this->getInfo());
@@ -203,6 +209,8 @@ class RestModel extends Entity implements DAOInterface
         $idProp = $this->idProperty;
         try {
             $this->proxy->resource = $this->getUrl();  //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+            $this->proxy->headers = $this->headers;
+
 
             $r = $this->proxy->destroy($this->$idProp);
 
@@ -231,6 +239,8 @@ class RestModel extends Entity implements DAOInterface
         $instance->resource = $this->resource;
 
         $instance->proxy->resource = $this->getUrl();  //fix:la risorsa potrebbe essere cambiata anche dopo che l'oggetto è stato istanziato
+        $instance->proxy->headers = $this->headers;
+
         $proxy = $instance->proxy;
         if ($instance->rootPropertyForMethodFind != NULL)
             $root = $instance->rootPropertyForMethodFind;
