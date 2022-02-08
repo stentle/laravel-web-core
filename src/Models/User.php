@@ -22,7 +22,7 @@ class User extends RestModel
 
     protected $resource = 'customers';
 
-    protected $fillable  = array('givenName', 'gender', 'company', 'profession', 'primaryEmail', 'password', 'familyName', 'country', 'nickname', 'taxId', 'birthDate', 'telephone');
+    protected $fillable  = array('givenName', 'gender', 'company', 'profession', 'primaryEmail', 'password', 'familyName', 'country', 'nickname', 'taxId', 'birthDate', 'telephone', 'profilePhoto');
 
     public $givenName;
     public $familyName;
@@ -40,6 +40,7 @@ class User extends RestModel
     public $updateDate;
     public $gender;
     public $nickname;
+    public $profilePhoto;
     public $securityRole;
     public $loginCounter;
     public $numberOfComments;
