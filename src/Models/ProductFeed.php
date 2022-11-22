@@ -252,7 +252,7 @@ class ProductFeed extends Product
                             'prices' => $variant['prices'],
                             'availabilityTotal' => $variant['availabilityTotal'],
                             'key' => $keyChildren,
-                            'pricesComparison' => $variant['pricesComparison'],
+                            //'pricesComparison' => $variant['pricesComparison'],
                             'value' => $variant['attributeLocales'][$keyChildren]['value'],
                             'name' => $variant['attributeLocales'][$keyChildren]['locale']
                         ];
